@@ -1,0 +1,149 @@
+---
+title: "Text Analyis"
+output: github_document
+---
+
+
+
+
+# Your mission
+
+Perform text analysis.
+
+## Okay, I need more information
+
+Perform sentiment analysis or topic modeling using text analysis methods as demonstrated in the pre-class work and in the readings.
+
+## Okay, I need even more information.
+
+Do the above. Can't think of a data source?
+
+- `gutenbergr`
+- `AssociatedPress` from the `topicmodels` package
+- `NYTimes` or `USCongress` from the `RTextTools` package
+- Harry Potter Complete 7 Books text
+
+```{r, message=FALSE, warning=TRUE}
+if (packageVersion("devtools") < 1.6) {
+  install.packages("devtools")
+}
+
+devtools::install_github("bradleyboehmke/harrypotter")
+
+library(harrypotter)
+```
+- [State of the Union speeches](https://pradeepadhokshaja.wordpress.com/2017/03/31/scraping-the-web-for-presdential-inaugural-addresses-using-rvest/)
+- Scrape tweets using [`twitteR`](https://www.credera.com/blog/business-intelligence/twitter-analytics-using-r-part-1-extract-tweets/)
+
+Analyze the text for sentiment OR topic. **You do not need to do both**. The datacamp courses and [Tidy Text Mining with R](http://tidytextmining.com/) are good starting points for templates to perform this type of analysis, but feel free to *expand beyond these examples*.
+
+# Timelines and Task
+
+
+We will spend the next 2 weeks working on analyzing textual data in R. You will do the following:
+
+- Start with some text based data.
+- Clean data and prepare it for analysis
+- Ask questions about the data
+- Answer these questions with the data using tables and graphics
+- Each group member must have their own unique question that they code the answer for. 
+
+
+
+QUESTIONS:
+- How sentiment changes across chapters
+- Most common words
+- Common characters
+- Tracking anticipation
+- Word count
+
+
+
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+devtools::install_github("bradleyboehmke/harrypotter")
+library(harrypotter)
+library(tidytext)
+library(stringr)
+library(ggplot2)
+
+# create vector of book names
+book_names <- list(philosophers_stone, chamber_of_secrets, prisoner_of_azkaban, goblet_of_fire, order_of_the_phoenix, half_blood_prince, deathly_hallows)
+names(book_names) <- c("philosophers_stone", "chamber_of_secrets", "prisoner_of_azkaban", "goblet_of_fire", "order_of_the_phoenix", "half_blood_prince", "deathly_hallows")
+
+# clean data
+books = vector(mode = "list", length = 7)
+for(i in 1:length(books)){
+  # convert text to dataframe
+  data <- data_frame(text = book_names[[i]])
+  # add column for chapter numbers and title of book
+  data <- mutate(data, chapter = c(1:nrow(data)), title = names(book_names)[i])
+  # split by word and remove punctuation
+  data <- data %>%
+    unnest_tokens(word, text, to_lower = TRUE)
+  # store clean data to list
+  books[[i]] <- data
+}
+
+# make one data frame from list of data frames
+books_raw <- plyr::ldply(books, data.frame)
+books <- anti_join(books_raw, stop_words)
+```
+
+
+# book 7
+```{r, message=FALSE}
+books %>% 
+  count(word, sort = TRUE)
+
+bing <- inner_join(books, get_sentiments("bing")) %>%
+  filter(title == "deathly_hallows")
+
+percents <- count(bing, title, chapter, sentiment) %>%
+    group_by(chapter) %>%
+    mutate(total_words = sum(n),
+           percent = n / total_words)
+
+ggplot(percents, aes(x = chapter, y = percent, col = as.factor(sentiment))) +
+  geom_line() +
+  geom_smooth(method = "loess", se = FALSE)
+```
+
+```{r, message=FALSE}
+my_book <- filter(books, title == "deathly_hallows")
+afinn <- inner_join(my_book, get_sentiments("afinn"), by = "word")
+scores <- afinn %>%
+  group_by(chapter) %>%
+  summarize(score = sum(score))
+
+ggplot(scores, aes(x = chapter, y = score)) +
+  geom_hline(yintercept = 0, col = "red") +
+  geom_line() +
+  geom_smooth(method="loess", se = FALSE) +
+  scale_y_continuous(limits = c(-310, 310))
+```
+```{r}
+filter(books, title == "deathly_hallows") %>%
+  group_by(chapter) %>%
+  summarize(word_count = n()) %>%
+  ggplot(aes(chapter, word_count)) +
+  geom_col()
+```
+
+```{r}
+nrc <- inner_join(books, get_sentiments("nrc")) %>%
+  filter(title == "deathly_hallows", sentiment == "anticipation")
+percents <- group_by(nrc, chapter) %>%
+  summarize(n_anticipation = n())
+
+total_words <- filter(books, title == "deathly_hallows") %>%
+  group_by(chapter) %>%
+  summarize(n_total = n())
+
+percents <- mutate(percents, n_total = total_words$n_total, percent = n_anticipation/n_total)
+
+ggplot(percents, aes(x = chapter, y = percent)) +
+  geom_line() +
+  geom_smooth(method = "loess", se = FALSE)
+```

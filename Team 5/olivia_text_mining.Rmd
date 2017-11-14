@@ -1,0 +1,107 @@
+---
+title: "olivia_text_mining"
+author: "Olivia Iles"
+date: "October 19, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r,cache=TRUE}
+library(RTextTools)
+library(tidytext)
+library(stringr)
+library(dplyr)
+data("NYTimes")
+
+NYTimes$Title = as.character(NYTimes$Title)
+words = unnest_tokens(NYTimes, word, Title,to_lower=FALSE)
+
+caps_pattern = "^[^a-z]*$"
+words$caps <- str_detect(words$word,caps_pattern)
+
+#Calculate total num of words in this case for later 
+words <- words %>%
+  group_by(caps) %>%
+  mutate(case_total=n()) %>%
+  ungroup()
+
+##Now change to lowercase for sentiment matches
+words$word = str_to_lower(words$word)
+sents.nrc = inner_join(words, get_sentiments("nrc"), by="word")
+```
+
+```{r}
+#Now comparing analysis by case
+positives <- sents.nrc %>%
+  count(caps,sentiment,case_total) %>%
+  mutate(percent = n/case_total) %>%
+  filter(sentiment=="positive")
+
+negatives <- sents.nrc %>%
+  count(caps,sentiment,case_total) %>%
+  mutate(percent = n/case_total) %>%
+  filter(sentiment=="negative")
+```
+
+```{r}
+#Statistical analysis
+
+# We want to create a table for use in a prop.test
+create_table <- function(tib) {
+  tib$n_not <- tib$case_total-tib$n
+  prop_table <- tib[,c(4,6)]
+  
+  prop_table <- matrix(c(prop_table$n[1],prop_table$n[2],prop_table$n_not[1],prop_table$n_not[2]),ncol=2)
+  rownames(prop_table) <- c("lower","upper")
+  
+  return(prop_table)
+}
+
+#First for positives:
+pos_table <- create_table(positives)
+colnames(prop_table) <- c("pos","not pos")
+prop.test(pos_table)
+
+#Now for negatives
+neg_table <- create_table(negatives)
+colnames(prop_table) <- c("negative","not negative")
+prop.test(neg_table)
+```
+Based on these results, the difference in proportions of positives and negatives are statistically significant across upper case and lower case. Specifically, it appears that lowercase had a higher proportion of positive words and a higher proportion of negative words.
+
+
+```{r}
+#visualize
+library(ggplot2)
+
+sents.nrc %>%
+  filter(sentiment=="negative") %>%
+  count(word,caps) %>%
+  group_by(caps) %>%
+  top_n(10) %>%
+  ungroup() %>%
+  mutate(word = reorder(paste(word, caps, sep = "__"), n)) %>%
+  # Set up the plot with aes()
+  ggplot(aes(x=word,y=n,fill=caps)) +
+  geom_col(show.legend = FALSE) +
+  scale_x_discrete(labels = function(x) gsub("__.+$", "", x)) +
+  facet_wrap(~ caps, nrow = 2, scales = "free") +
+  coord_flip()
+
+sents.nrc %>%
+  filter(sentiment=="positive") %>%
+  count(word,caps) %>%
+  group_by(caps) %>%
+  top_n(10) %>%
+  ungroup() %>%
+  mutate(word = reorder(paste(word, caps, sep = "__"), n)) %>%
+  # Set up the plot with aes()
+  ggplot(aes(x=word,y=n,fill=caps)) +
+  geom_col(show.legend = FALSE) +
+  scale_x_discrete(labels = function(x) gsub("__.+$", "", x)) +
+  facet_wrap(~ caps, nrow = 2, scales = "free") +
+  coord_flip()
+```

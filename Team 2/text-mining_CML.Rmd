@@ -1,0 +1,157 @@
+---
+title: "Text Analyis"
+author: "Catrina Mueller-Leonhard"
+output: github_document
+---
+
+
+```{r, eval=T, results=F, warning=F, comment=F, cache=T}
+library(RTextTools)
+library(dplyr)
+library(gutenbergr)
+gutenberg_metadata
+data("gutenbergr", package="gutenbergr")
+
+picture<- gutenberg_download(174)
+alice <- gutenberg_download(751)
+Buddhism<- gutenberg_download(18223)
+Bible<- gutenberg_download(10)
+Koran<- gutenberg_download(2800)
+```
+
+```{r, eval=T, warning=FALSE, comment=F, cache=T}
+#Data Cleaning for my chosen book "The Picture of Dorian Gray" by Oscar Wilde
+library(tidytext)
+library(stringr)
+
+picture.clean<- picture %>%  mutate(linenumber = row_number(), chapter = cumsum(str_detect(text, regex("chapter [\\divxlc]", ignore_case = TRUE)))) %>% filter(chapter >0) %>% unnest_tokens(word, text)
+```
+
+
+
+```{r, warning=FALSE, comment=F, cache=T}
+#Extracting Data from my chosen book "The Picture of Dorian Gray" by Oscar Wilde
+
+pos.neg<- picture.clean %>% inner_join(get_sentiments("bing")) %>% group_by(chapter) %>% count(chapter, sentiment) %>% rename(total_words=n)
+
+Chapter.score<- picture.clean %>% inner_join(get_sentiments("afinn")) %>% group_by(chapter) %>% summarise(chapter.score=sum(score)) 
+
+Picture.Sentiment<- picture.clean %>% inner_join((get_sentiments("nrc"))) %>% count(sentiment)
+```
+
+Question 1: What are the general sentiments of the book?
+
+
+```{r,warning=FALSE, cache=TRUE}
+library(ggplot2)
+ggplot(Picture.Sentiment, aes(x=sentiment, y=n, group=sentiment))+ theme_classic() + geom_label(aes(label=n, color=sentiment), show.legend = F)+ ggtitle("Sentiment Count \nThe Portrait of Dorian Grey") + ylab("Count") + xlab("")
+
+#Answer:looking at the book in its entirety, there appears to be a mixture of positive and negative sentiments (more positive than negative) followed by trust, sadness and joy. Since I know that background of this book - this kind of surprises me. I would have expected more negative sentiments. 
+```
+
+Question 2: Are there more Positive or Negative sentiments?
+```{r}
+library(ggplot2)
+ggplot(pos.neg, aes(x = chapter, y=total_words)) + theme_classic()+
+  geom_col(aes(fill=sentiment)) + scale_fill_manual("legend", values = c("goldenrod3","cadetblue")) +  ggtitle ("Positive and Negative Sentiment by Chapter \nThe Portait of Dorian Gray") +ylab("Word Count")
+
+#Answer: Analyzing the data in this way (bing sentiment package), there appears to be more negative sentiments than positive sentiments as I expected.  
+```
+Question 3: How do the positive and negative sentiments progress through the story? 
+
+```{r}
+ggplot(pos.neg, aes(chapter, total_words, color=sentiment)) + theme_classic()+geom_line(size = 1.5) +
+  geom_smooth(method = "lm", se = FALSE, lty = 2) + ylab("Number")+ 
+  ggtitle("Dichotomized Sentiment Per Chapter")+ expand_limits(y = 0)
+
+#Answer: The story begins more positive than negative but becomes more negative as the story progresses. The positive and negative sentiment lines intersect at Chapter 6 indicating that there may be a pivotal point in the story.
+```
+Question 4: Does the overall book have a positive or negative sentiment?
+```{r}
+
+ggplot(Chapter.score, aes(chapter, chapter.score)) + theme_classic()+ geom_line(size = 1, color="cadetblue") +
+    geom_smooth(method = "lm", se = FALSE, lty = 2, color="goldenrod3") + ylab("Score")+ xlab("Chapter") +
+    ggtitle("Chapter Score of The Picture of Dorien Gray ") + expand_limits(y = 0)
+
+# Answer: When the book is analyzed by creating a score per chapter, there is an obvious downward trend showing that the book becomes more negative as it proceeds. \
+```
+
+
+```{r,warning=FALSE, cache=T}
+#Wordcloud
+library(tidytext)
+library(stringr)
+library("SnowballC")
+library("wordcloud")
+library("RColorBrewer")
+library(dplyr)
+library(ggplot2)
+
+cloud<- picture.clean %>% inner_join(get_sentiments("bing")) %>% count(word, sentiment) %>% arrange(desc(n))
+
+wordcloud( words = cloud$word, freq = cloud$n, min.freq = 7, max.words=200, random.order=F, rot.per=0.4,colors=brewer.pal(8, "Dark2"))
+```
+
+
+
+
+```{r,warning=FALSE, comment=F, cache=T}
+#Clean Group Books
+Bible1<-Bible %>% unnest_tokens(word, text)
+Buddhism1<- Buddhism %>% unnest_tokens(word, text)
+Koran1<-Koran %>% unnest_tokens(word, text)
+alice_tidy<- alice %>%  mutate(linenumber = row_number(), chapter = cumsum(str_detect(text, regex("chapter|CHAPTER [\\divxlc]", ignore_case = TRUE)))) %>% #breaks down the book by chapter and stores the line number
+  filter(chapter >0) %>% unnest_tokens(word, text)
+```
+
+
+```{r, warning=FALSE, comment=F, cache=T}
+library(ggplot2)
+# For Group Comparison
+#Group Extraction
+Dorien.score<-picture.clean %>% inner_join(get_sentiments("afinn")) %>% summarise(score_per_word=sum(score)/nrow(picture.clean))
+Bible_score<-Bible1 %>% inner_join(get_sentiments("afinn"))  %>% summarise(score_per_word=sum(score)/nrow(Bible1))
+Buddhism_score<-Buddhism1 %>% inner_join(get_sentiments("afinn"))  %>% summarise(score_per_word=sum(score)/nrow(Buddhism1))
+Koran_score<-Koran1 %>% inner_join(get_sentiments("afinn"))  %>% summarise(score_per_word=sum(score)/nrow(Koran1))
+Alice_score<-alice_tidy %>% inner_join(get_sentiments("afinn"))  %>% summarise(score_per_word=sum(score)/nrow(alice_tidy))
+
+Bible_total<-Bible1 %>% inner_join(get_sentiments("afinn")) %>% summarise(total= sum(score))
+Dorien.total<-picture.clean %>% inner_join(get_sentiments("afinn")) %>% summarise(total= sum(score))
+Buddhism_total<-Buddhism1 %>% inner_join(get_sentiments("afinn")) %>% summarise(total= sum(score))
+Koran_total<-Koran1 %>% inner_join(get_sentiments("afinn")) %>% summarise(total= sum(score))
+Alice_total<-alice_tidy %>% inner_join(get_sentiments("afinn")) %>% summarise(total= sum(score))
+
+score<-rbind(Bible_score,Buddhism_score, Koran_score, Dorien.score, Alice_score) %>% mutate(book=c("The Bible","The Essence of Buddhism","The Koran", "Picture of Dorian Gray", "Alice's Adventures in Wonderland"))
+score<- score%>% arrange(desc(score_per_word))
+total<-rbind(Bible_total,Buddhism_total, Koran_total, Dorien.total, Alice_total) %>% mutate(book=c("The Bible","The Essence of Buddhism","The Koran", "Picture of Dorian Gray", "Alice's Adventures in Wonderland")) 
+total<- total%>% arrange(desc(total))
+```
+
+
+
+# Group Question 1: How do the books compare by total score? 
+```{r}
+ggplot(total,aes(x=book,y=total,fill=book)) + theme_classic() +geom_bar(stat = "identity", show.legend = FALSE)  + xlab("")+ ylab("Score") + ggtitle("Total Score Book Comparison") +coord_flip()
+
+#Answer: The Bible is the most positive probably because it is the longest book. The least positive is"The Essence of Buddhism" and "The Picture of Dorian Gray" 
+```
+
+# Group Question 2: How do the books compare to one another by overall score taking into account the length of the book?
+```{r}
+ggplot(score,aes(x=book,y=score_per_word,fill=book)) + theme_classic() +geom_bar(stat = "identity", show.legend = F)  + xlab("")+ ylab("Score Per Word") + ggtitle("Sentiment Score Per Word Comparison") +coord_flip()
+
+#Answer: When the books length is taken into account, the most positve books are "The Essence of Buddhism" and "Alice's Adventures in Wonderland" whereas the least positive books are "The Bible" and "The Picture of Dorian Gray". 
+
+```
+
+
+
+
+We will spend the next 2 weeks working on analyzing textual data in R. You will do the following:
+
+- Start with some text based data.
+- Clean data and prepare it for analysis
+- Ask questions about the data
+- Answer these questions with the data using tables and graphics
+- Each group member must have their own unique question that they code the answer for. 
+

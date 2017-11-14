@@ -1,0 +1,422 @@
+---
+title: "Text Analyis"
+output: github_document
+---
+
+
+
+
+# Your mission
+
+Perform text analysis.
+
+## Okay, I need more information
+
+Perform sentiment analysis or topic modeling using text analysis methods as demonstrated in the pre-class work and in the readings.
+
+## Okay, I need even more information.
+
+Do the above. Can't think of a data source?
+
+- `gutenbergr`
+- `AssociatedPress` from the `topicmodels` package
+- `NYTimes` or `USCongress` from the `RTextTools` package
+- Harry Potter Complete 7 Books text
+
+```{r, message=FALSE, warning=TRUE}
+
+install.packages("devtools")
+devtools::install_github("bradleyboehmke/harrypotter")
+
+library(harrypotter)
+install.packages(ggplot2)
+```
+- [State of the Union speeches](https://pradeepadhokshaja.wordpress.com/2017/03/31/scraping-the-web-for-presdential-inaugural-addresses-using-rvest/)
+- Scrape tweets using [`twitteR`](https://www.credera.com/blog/business-intelligence/twitter-analytics-using-r-part-1-extract-tweets/)
+
+Analyze the text for sentiment OR topic. **You do not need to do both**. The datacamp courses and [Tidy Text Mining with R](http://tidytextmining.com/) are good starting points for templates to perform this type of analysis, but feel free to *expand beyond these examples*.
+
+# Timelines and Task
+
+
+We will spend the next 2 weeks working on analyzing textual data in R. You will do the following:
+
+- Start with some text based data.
+- Clean data and prepare it for analysis
+- Ask questions about the data
+- Answer these questions with the data using tables and graphics
+- Each group member must have their own unique question that they code the answer for.
+
+
+```{r}
+library(plyr)
+library(dplyr)
+library(tidytext)
+library(stringr)
+library(ggplot2)
+
+#make a vector which contains the titles of the 7 books
+titles <- c("philosophers_stone", 
+            "chamber_of_secrets", 
+            "prisoner_of_azkaban", 
+            "goblet_of_fire", 
+            "order_of_the_phoenix", 
+            "half_blood_prince", 
+            "deathly_hallows")
+
+#define books as a list of the seven books
+books <- list(philosophers_stone, 
+              chamber_of_secrets, 
+              prisoner_of_azkaban,
+              goblet_of_fire, 
+              order_of_the_phoenix, 
+              half_blood_prince,
+              deathly_hallows)
+
+#create an empty tibble   
+series <- tibble()
+
+#run a full loop to make the seven books into one-token-per-row structure.
+for(i in seq_along(titles)) {
+        #create an tibble called clean which has three columns, which are the ith book title, the chpater in ith book and             word (one word in each row)
+        clean <- tibble(chapter = seq_along(books[[i]]), text = books[[i]]) %>%
+                 #using unnext_tokens to break the text into individual tokens 
+                unnest_tokens(word, text) %>%
+                 #create a new column called that is the ith vector in vector titles
+                mutate(book = titles[i]) %>%
+                 #select the columns book and the remaining columns 
+                select(book, everything())
+        #combine the empty tibble and clean,
+        series <- rbind(series, clean)
+}
+
+series
+
+```
+
+(1) How the sentiment changes across the entire book?
+
+```{r}
+#select book6 (half-blood prince from series)
+Book6 <- series %>%
+  filter (book == "half_blood_prince")
+
+Book6Senti <- Book6 %>%
+       #using "afin" to get the sentiment value of each word
+       inner_join(get_sentiments("afin")) %>%
+       #group by chapter
+       group_by(chapter) %>%
+       #calculate the sum of sentiment over every chapter
+       summarise(n=sum(score))
+Book6Senti
+
+p1 <- ggplot(Book6Senti, aes(x=chapter, y=n))+
+      geom_line(show.legend = FALSE, size = 0.4, color = "blue") +
+      scale_color_brewer(palette = "Set1") +
+      geom_smooth(se=FALSE, size = 0.4, linetype = 1, color = "green") +
+      geom_point(color="blue", size = 1)
+
+p1 + theme(panel.grid.major = element_blank(), 
+           panel.grid.minor = element_blank(),
+           panel.background = element_blank(),
+           axis.line = element_line(colour = "black"), 
+           plot.title = element_text(hjust = 0.5) )+
+      xlim(1, 30) +
+           scale_x_continuous(breaks = c(1:30)) +
+      ylim(-250, 250) +
+          scale_y_continuous(breaks = c(seq(-250,250,by=50))) +
+      geom_hline(yintercept = 0, color = "red") +
+      ggtitle("Change in Sentiments of Half-Blood Prince") +
+      labs(x="Chapter",y="Net Sentiment")
+
+```
+
+
+```{r}
+Book6Bing <- Book6 %>%
+      inner_join(get_sentiments("bing")) %>%
+      group_by(sentiment) %>%
+      ungroup() %>%
+  group_by(chapter) %>%
+  count(sentiment, chapter)
+  
+
+p1 <- ggplot(Book6Bing, aes(x=chapter, y=n, color = sentiment)) +
+      geom_line(show.legend = FALSE, size = 0.3) +
+      scale_color_brewer(palette = "Set1") +
+      geom_smooth(se=FALSE, size = 0.2, linetype = 4)
+
+p1 + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(),axis.line = element_line(colour = "black") )+
+ xlim(1, 30) +
+scale_x_continuous(
+  breaks = c(1:30)) +
+ ylim(1, 280)
+
+```
+
+(2) What are the most common words by chapter?
+```{r}
+Book6Word <- Book6 %>%
+  group_by(chapter)  %>%
+  #remove stop words
+  anti_join(stop_words) %>%
+  count(word, chapter) %>%
+  top_n(1)
+
+Book6Word
+```
+
+(3) Which characters appear the most 
+```{r}
+library(dplyr)
+Book6Char <- Book6  %>%
+             group_by(word) %>%
+             select(word) %>%
+             filter(word == "harry" | 
+                word == "ron" | 
+                word == "hermione" | 
+                word == "dumbledore" |
+                word == "voldemort" | 
+                word == "dobby") %>%
+         count (word, sort = TRUE) %>%
+         arrange (desc(n))
+           
+Book6Char 
+
+p2 <- ggplot(Book6Char, aes(x=word, y=n)) +
+geom_col(show.legend = FALSE, fill = "lightblue", width  = 0.5)
+
+p2 +  theme(panel.grid.major = element_blank(), 
+           panel.grid.minor = element_blank(),
+           panel.background = element_blank(),
+           axis.line = element_line(colour = "black"), 
+           plot.title = element_text(hjust = 0.5) )
+```
+
+(4) How the emotion anticipation changes throughtout the book
+```{r}
+Book6Anti <- Book6 %>% 
+       inner_join(get_sentiments("nrc"))  %>%
+       group_by(chapter) %>%
+       count (sentiment) %>%
+       filter(sentiment == "anticipation") 
+        
+Book6Anti
+
+p4 <- ggplot(Book6Anti, aes(x=chapter, y=n)) +
+      geom_col(show.legend = FALSE, 
+               fill = "blue", 
+               width  = 0.5)
+
+p4 + theme(panel.grid.major = element_blank(), 
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            axis.line = element_line(colour = "black"), 
+            plot.title = element_text(hjust = 0.5) ) +
+            scale_x_continuous(breaks = c(1:30)) +
+            scale_y_continuous(breaks = c(seq(0,180,by=20))) +
+     ggtitle("Change of Emtion Anticipation in Half-Blood Prince") +
+     labs(x="Chapter",y="Times of Anticipation")
+
+```
+
+
+(5) Word count for each book
+```{r}
+Book6Count <- series %>%
+  filter(book == "half_blood_prince") %>%
+  group_by(chapter) 
+nrow(Book6Count)
+```
+
+
+(6) Graphing the most popular words in this book using wordcloud
+
+```{r}
+library(plyr)
+library(dplyr)
+library(tidytext)
+library(stringr)
+library(ggplot2)
+install.packages("wordcloud")
+library(wordcloud)
+colorPalette="Dark2"
+p6 <- series %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, random.color = FALSE, colors= c("indianred2","indianred4","indianred6","indianred")))
+
+
+
+```
+
+(7) Graphing the most popular positive and negative words 
+```{r}
+library(reshape2)
+library(wordcloud)
+
+series %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("#F8766D", "#00BFC4"),
+                   max.words = 100)
+```
+
+
+(8) examine pairs of two consecutive words
+```{r}
+
+titles <- c("philosophers_stone", 
+            "chamber_of_secrets", 
+            "prisoner_of_azkaban", 
+            "goblet_of_fire", 
+            "order_of_the_phoenix", 
+            "half_blood_prince", 
+            "deathly_hallows")
+
+books <- list(philosophers_stone, 
+              chamber_of_secrets, 
+              prisoner_of_azkaban,
+              goblet_of_fire, 
+              order_of_the_phoenix, 
+              half_blood_prince,
+              deathly_hallows)
+  
+hp_bigrams <- tibble()
+
+for(i in seq_along(titles)) {
+        
+        clean <- tibble(chapter = seq_along(books[[i]]),
+                        text = books[[i]]) %>%
+                 unnest_tokens(bigram, text, token = "ngrams", n = 2) %>%
+                 mutate(book = titles[i]) %>%
+                 select(book, everything())
+
+        hp_bigrams <- rbind(hp_bigrams, clean)
+}
+
+
+Book6bi <- hp_bigrams%>%
+  filter (book == "half_blood_prince")
+
+
+
+```
+
+(9) 
+```{r}
+library(tidyr)
+
+#split bigram into two columns, which are word1 and word2
+bigrams_separated <- Book6bigrams %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+#remove cases where either is a stop-word
+bigrams_filtered <- bigrams_separated %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+#define a vector of negation words
+negation_words <- c("not", "no", "never", "without")
+
+#filter all the rows which word1 belongs to one of the negation words. 
+#using "afinn" to get the sentiment of word2, and count how many times the word appers in a chapter
+not_words <- bigrams_separated %>% 
+  filter(word1 %in% negation_words) %>%
+  group_by(chapter) %>%
+  inner_join(get_sentiments("afin"), by = c(word2 = "word")) %>%
+  count(word1, word2, score, sort = TRUE) %>%
+  ungroup()
+
+
+#because we assumed "not object"as positive words before, so we need to substract two times of the (n*score) in order to find the net sentiment value of each chapter. We take the negative value because the actual socre is opposite to the sentiment of the word contribution
+contribution <- not_words %>%
+  mutate(contributionscore = (-2* n * score)) %>%
+  select (chapter, contributionscore) %>%
+  group_by(chapter) %>%
+  summarise(n =sum(contributionscore))
+
+contribution
+
+realresult <- merge(contribution, Book6Senti, by="chapter") %>%
+  mutate(n= (n.x + n.y))
+
+x <- realresult %>%
+  select(chapter, n, n.y)
+
+p2 <- ggplot(x, aes(x = chapter)) + 
+  geom_line(aes(y = n.y, color = 'original')) + 
+  geom_line(aes(y = n, color = 'adjusted'))
+
+p2+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(),axis.line = element_line(color = "black"), plot.title = element_text(hjust = 0.5))+
+scale_x_continuous(
+  breaks = c(1:30)) +
+  geom_hline(yintercept = 0, color = 'blue') +
+scale_y_continuous(
+    breaks = c(seq(-250,250,by=50)) 
+  )+ 
+  ggtitle("Change in Sentiment of Half-Blood Prince After Adjustment ")
+
+bigrams_united <- bigrams_filtered %>%
+  unite(bigram, word1, word2, sep = " ")
+
+order <- bigrams_united %>%
+  group_by(chapter) %>%
+  count(bigram, chapter) %>%
+  top_n(1)
+order
+
+realresult
+fit <- aov(n ~ n.y, data=realresult)
+fit
+```
+
+```{r,fig.width = 24, fig.height = 24}
+install.packages("igraph")
+install.packages("ggraph")
+library(igraph)
+library(ggraph)
+library(dplyr)
+
+bigram_counts <- bigrams_filtered %>% 
+  count(word1, word2, sort = TRUE)
+
+bigram_graph <- bigram_counts %>%
+  filter(n > 3) %>%
+  graph_from_data_frame()
+
+
+set.seed(2017)
+
+ggraph(bigram_graph, layout = "fr") +
+  geom_edge_link() +
+  geom_node_point() +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1)
+```
+```{r,fig.width = 24, fig.height = 24}
+set.seed(2016)
+
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+
+ggraph(bigram_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE,
+                 arrow = a, end_cap = circle(.07, 'inches')) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+```
+```{r}
+library(tidytext)
+n <- bigrams_filtered %>%
+  filter(word1 == "harry" | word2 == "harry")  
+  
+newtibble <- n [,1:3]
+colnames(newtibble) <- c("book", "chapter", "word")
+nnn<- newtibble %>%
+        inner_join(get_sentiments("afin"))
+nnn
+```
+

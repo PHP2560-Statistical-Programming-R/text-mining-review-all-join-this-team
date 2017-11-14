@@ -1,0 +1,111 @@
+---
+title: "Intitial Work"
+output: html_document
+---
+
+
+
+## Setting up for grabbing this Data
+
+## Setup
+
+```{r, eval=FALSE}
+
+## This function checks the installed packages on local computer and installs if already not installed and loads them  
+source("sadia/check_packages_SS.R")
+package_check(c("dplyr","ggplot2","gutenbergr","stringr", "stringi", "tidytext", "tidyr", "gridExtra", "SnowballC", "wordcloud", "RColorBrewer"))
+
+# dplyr # for data manipulation
+# ggplot2 # for graphs
+# gutenbergr # to download gutenberg books
+# stringr, stringi # for text analysis
+# tidytext, tidyr #for tidying the data
+# gridExtra # to arrange multiple plots in one page
+# SnowballC # for text stemming
+# wordcloud # word-cloud generator 
+# RColorBrewer # color palettes
+```
+
+
+## Initial Scraping
+
+We downloaded the books with the "gutenberg_download" function of gutenbergr package. "gutenbergr" package has other functions like:
+
+- "gutenberg_metadata" that shows information about each work, pairing Gutenberg ID with title, author, language, etc and 
+- "gutenberg_authors" that shows information about each author, such as aliases and birth/death year.
+
+#My textual data: 
+-Alice's adventure in wonderland is a fantasy novel written by Lewis Carroll, narrating the story of little "Alice" who fells through the rabbit hole into a fantasy world. The book has total 13 chapters and I am trying to analyze the change of emotions throughout the book as alice expererienced different adventures in her wonderland! 
+
+-Finally, I will compare this book with the books of my other team members (Picture of Dorian Gray choosen by Catrina; and Quran, Bible and The Essence of Buddhism choosen by Ze) to see the variation of sentiments in different genre books
+
+
+
+The following function will download the books and save in a list `booklist.rda` in the `data_SS` folder
+```{r, eval=FALSE}
+get_book <- function(bookID){
+  #Create directory, if it already exists then dont show warnings.
+  # This eliminates the need for setwd
+  # running my code will create these files whereever you store this data in
+  dir.create("sadia/data_SS/", showWarnings = FALSE)
+  
+  booklist <- list() #list of dataframes that will contain all the 5 books
+  for (i in 1:length(bookID)){
+    booklist[[i]] <- gutenberg_download(bookID[i]) #download one by one and save in the list
+    save(booklist, file="sadia/data_SS/booklist.rda")
+  }
+  # print(booklist) debug print
+}
+get_book(bookID)
+```
+
+
+Here are the book ids to download 5 books that will be analyzed by our team:
+```{r, eval=FALSE}
+bookID <-c(751, 174, 2800, 10, 18223)
+# 751: Alice's Adventure in Wonderland (I will analyze this book)
+# 174: Picture of Dorian Gray (Cat will analyze this book)
+# 2800: Quran (Ze will analyze this books)
+# 10: Bible (Ze will analyze this books)
+# 18223: The Essence of Buddhism (Ze will analyze this books)
+get_book(bookID)
+```
+
+We can see the structure of the booklist by taking the `.rda` file:
+```{r, eval=TRUE}
+load("data_SS/booklist.rda")
+str(booklist) #We can then see that what we have a list of 5 books with the texts of each book in a dataframe
+```
+
+As the next step, we have cleaned the books (removing spaces, punctuations, arranging by chapter) and created a data frame of all books `tidy_books.rda`:
+
+```{r, eval=FALSE}
+clean_book <- function(bookID){
+  load("sadia/data_SS/booklist.rda")
+  tidy_books <- list()
+  for (i in 1:length(bookID)){
+    tidy_books[[i]] <- booklist[[i]] %>%mutate(linenumber = row_number(), chapter = cumsum(str_detect(text,regex("chapter|CHAPTER[\\divxlc]", 
+                    ignore_case = TRUE)))) %>% unnest_tokens(word, text)
+     }
+  save(tidy_books, file = "sadia/data_SS/tidy_books.Rda")
+  #print( str(tidy_books)) #debug print
+}
+
+clean_book(bookID)
+```
+
+
+We now have a data frame output from this. We then create the following files containing functions and analysis from this data:
+
+```
+01_get_packages_SS.R   # install the required packages
+02_get_books_SS.R    # download the books
+03_clean_books_SS   # clean the books
+04_join_sentiment_SS   # join with the lexicon for sentiment analysis
+05_graphs_SS     # create the graphs
+06_paper_SS     # create the final paper containg the results of analysis
+```
+ 
+
+
+

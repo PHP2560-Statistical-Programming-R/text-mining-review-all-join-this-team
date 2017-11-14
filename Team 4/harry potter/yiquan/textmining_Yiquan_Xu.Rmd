@@ -1,0 +1,111 @@
+---
+title: "Text Analyis"
+output: github_document
+---
+
+# Your mission
+
+Perform text analysis.
+
+## Okay, I need more information
+
+Perform sentiment analysis or topic modeling using text analysis methods as demonstrated in the pre-class work and in the readings.
+
+## Okay, I need even more information.
+
+Do the above. Can't think of a data source?
+
+- `gutenbergr`
+- `AssociatedPress` from the `topicmodels` package
+- `NYTimes` or `USCongress` from the `RTextTools` package
+- Harry Potter Complete 7 Books text
+
+- [State of the Union speeches](https://pradeepadhokshaja.wordpress.com/2017/03/31/scraping-the-web-for-presdential-inaugural-addresses-using-rvest/)
+- Scrape tweets using [`twitteR`](https://www.credera.com/blog/business-intelligence/twitter-analytics-using-r-part-1-extract-tweets/)
+
+Analyze the text for sentiment OR topic. **You do not need to do both**. The datacamp courses and [Tidy Text Mining with R](http://tidytextmining.com/) are good starting points for templates to perform this type of analysis, but feel free to *expand beyond these examples*.
+
+# Timelines and Task
+
+
+We will spend the next 2 weeks working on analyzing textual data in R. You will do the following:
+
+- Start with some text based data.
+- Clean data and prepare it for analysis
+- Ask questions about the data
+- Answer these questions with the data using tables and graphics
+- Each group member must have their own unique question that they code the answer for. 
+
+# Cleaning the data 
+```{r}
+book
+```
+# Questions for analysis: 
+
+1. By ordering the frequency of the word that appears(remove stop words), could you find the word that appears most frequently?
+```{r}
+tidy_freq
+```
+2. By doing sentiment analysis, which sentiment word is most likely to be used by author?
+```{r}
+sentiment_likely
+```
+3. By dividing into two groups, which word is used most frequently in each group?
+```{r}
+bing_freq
+```
+4. Can you draw wordcloud picture of the stone book?
+```{r}
+tidy_stone2
+```
+5. Can you draw a picture of the percentage of the word?
+```{r}
+stone_word
+```
+6. What is the relationship between the rank and frequency?
+```{r}
+freq_by_rank
+```
+7. Could you divide the text by bigrams rather than words?
+```{r}
+bigram_counts
+bigram_united
+```
+8. What is the tf_idf of the bigram_united we create in last question?
+```{r}
+bigram_tf_idf
+```
+9. Can you show the word after the negative word?
+```{r}
+not_words
+negated_words
+```
+10. Draw the picture of the relationship between different words, using arrows to show the relation.
+```{r}
+bigram_graph
+bigram_ggraph
+```
+11. What is the correlation between each word?
+```{r}
+word_cor
+```
+12. What are the top words appear in each of the book?
+```{r}
+top_book
+```
+13. Dividing by books, what is the top joy words in each of them?
+```{r}
+top_joy_book
+```
+14. Dividing by books, what is the top "sadness" words in each of them?
+```{r}
+top_sad_book
+```
+15. What is the ratio of the positive word and negative word in each book according to the chapter?
+```{r}
+ratio
+```
+16. What is the difference of negative words and positive words in each book according to the chapter?
+```{r}
+diff
+```

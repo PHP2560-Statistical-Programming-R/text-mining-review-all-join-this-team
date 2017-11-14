@@ -1,0 +1,301 @@
+---
+title: "Text Analyis by Annie Yang - Harry Potter"
+output: github_document
+---
+
+
+
+
+# Your mission
+
+Perform text analysis.
+
+## Okay, I need more information
+
+Perform sentiment analysis or topic modeling using text analysis methods as demonstrated in the pre-class work and in the readings.
+
+## Okay, I need even more information.
+
+Do the above. Can't think of a data source?
+
+- `gutenbergr`
+- `AssociatedPress` from the `topicmodels` package
+- `NYTimes` or `USCongress` from the `RTextTools` package
+- Harry Potter Complete 7 Books text
+    ```
+    if (packageVersion("devtools") < 1.6) {
+  install.packages("devtools")
+}
+
+devtools::install_github("bradleyboehmke/harrypotter")
+    ```
+- [State of the Union speeches](https://pradeepadhokshaja.wordpress.com/2017/03/31/scraping-the-web-for-presdential-inaugural-addresses-using-rvest/)
+- Scrape tweets using [`twitteR`](https://www.credera.com/blog/business-intelligence/twitter-analytics-using-r-part-1-extract-tweets/)
+
+Analyze the text for sentiment OR topic. **You do not need to do both**. The datacamp courses and [Tidy Text Mining with R](http://tidytextmining.com/) are good starting points for templates to perform this type of analysis, but feel free to *expand beyond these examples*.
+
+# Timelines and Task
+
+
+We will spend the next 2 weeks working on analyzing textual data in R. You will do the following:
+
+- Start with some text based data.
+- Clean data and prepare it for analysis
+- Ask questions about the data
+- Answer these questions with the data using tables and graphics
+- Each group member must have their own unique question that they code the answer for. 
+
+
+## Gather data from Github and store the Harry Potter Complete 7 Books text in a datafrome
+```{r}
+# sevenbook is a tidy text format dataframe including 7 novels.
+sevenbook
+```
+
+## 1. Common words Analysis
+
+** 1.1 What are top words in each book? **
+
+```{r}
+# Top 10 words in each novel
+top_words
+
+# Plot the bar chart of top words
+graph_top
+
+# From the bar charts, we find that main characters are Harry, Ron and Hermione.
+# And most common words are usually related to characters, such as "Dumbledore", "Hagrid", "Snape", "Uncle" and "Professor"...
+
+```
+
+
+** 1.2 What are common words in the novels after removing characters' names? **
+```{r}
+# After removing some common words related to the characters ("harry","harry's","potter","ron","hermione","dumbledore","snape","hagrid","weasley","voldemort","Malfoy","professor"), plot the top 10 words in each novel
+
+no_char_graph
+
+# The bar charts show that "looked", "eyes", "time", "voice", "head" (usually the words related to body) ... are in the top words.
+```
+
+## 2. Character analysis: How do the proportions of the three main characters change along with the novels / chapters? How do the proportions of other characters change along with the novels?
+
+```{r}
+# Calculate the proportion of word in each novel
+words_prop
+
+# Calculate the words' proportion by chapters in each novel
+words_prop_chapter
+```
+
+** 2.1 How do the proportions of the three main characters change along with the novels? **
+
+```{r}
+# Plot the proportions of the three main characters in each book. 
+
+prop_book_graph
+
+## The propotion of harry and ron slightly decreases with the series, while the proportion of hermione slightly increases. In the second book (chamber of secrets) there is a relatively big gap between the proportion of Ron and Hermione.
+```
+
+** 2.2 How do the proportions of three main characters change along with the chapters in each book? **
+
+```{r}
+# Draw line plots of each novel to compare the proportion change 
+
+prop_chapter_graph
+
+## For the fans of ron or hermione, they can find in which chapter the character has a relatively high proportion. For example, in the first book (philosophers stone), Ron and Hermione first appear in the 6th chapter.
+```
+
+** 2.3 How do the proportions of other characters change along with the novels? **
+
+```{r}
+
+other_prop
+
+# The line plot shows that the proportion of Hagrid goes down along with the novels. Overall, the proportion of Dumbledore goes up from 1 to 6 and it drops in the 7th novel. 
+```
+
+## 3. Sentiment analysis
+
+** 3.1 What are common joy words and sad words in the seven novels? **
+
+```{r}
+# Extract joy words from sentiment dataset NRC.
+
+nrcjoy
+
+# Use inner_join to perform the sentiment analysis.
+
+joy
+
+# We can see in each novel, the common joy words is "found". Also, "magical", "hope", "smile"... are frequently used joy words in seven books.
+
+joy_graph
+
+```
+
+
+```{r}
+# Extract sad words from sentiment dataset NRC.
+
+nrcsad
+
+# Use inner_join to perform the sentiment analysis.
+sad
+
+# We can see in each novel, the common sad words is "black", "dark". Also, "kill", "bad", "leave", "death"... are frequently used sad words in seven books. If we use NRC to do the sentiment analysis, we will find something wierd, since "mother" is in both joy and sad words list.
+
+sad_graph
+
+# Check the word "mother" in NRC lexicon. We can see that "mother" can be different sentiment. So when analysis sentiment here, we should not take "mother" into account.
+
+get_sentiments("nrc")%>%filter(word=="mother")
+
+```
+
+** 3.2 How does the sentiment change along with the novels / chapters? Does it become more positive or negative? **
+
+```{r}
+# 3.2.1 Compare the ratio of negative and positive words used in the seven books. Bigger ratio indicate more negative sentiment.
+
+ratio_np
+
+# The line graph shows that the ratio of negative and positive words fluctuates, a high ratio usually followed by a relatively low ratio in the next book, except that the ratio of "prisoner_of_azkaban"" is higher than "chamber of secrets".
+
+# 3.2.2 How does the ratio change through chapters in each book?
+
+ratio_chapter_np
+
+# The line graphs of each book show that at the end of the story, the ratio of negative and postive words declines to a lower level, which means the story has a relatively "happy ending". Also according to the fluctuation of each book, we know the ups and downs of the sentiment. For example, in the half blood prince, there is a peak of negative sentiment in chapter 29.
+```
+
+## 4. Examine how sentiment changes throughout each novel/chapter using section
+
+```{r}
+# Create a tidy text format that record the line number of each word.
+
+series
+
+```
+
+```{r}
+# Use Bing lexicon to analyze how sentiment changes along with sections. Here sentiment = positive-negative.
+
+series_bing
+
+## Usually, there are more negative words in each section.
+
+
+# Use AFINN lexicon to analyze how sentiment changes along with sections. Here sentiment=sum(score).
+
+series_afinn
+
+## The results seem to be more reasonable by using AFINN lexicon, because the AFINN lexicon has the score of each word. 
+
+# Take philosophers stone as an example to examine how sentiment changes throughout the chapter - bing
+
+sentence_sent
+
+stone_graph
+
+# We can see in which chapter there are more sections that have more positive sentiment, such as chapter 5, 6, 7.
+```
+
+## 5. Using wordcloud to find the most common words in Harry Potter
+
+```{r}
+sevenbook%>%
+  count(word)%>%
+  with(wordcloud(word,n,max.words=100))
+
+# Throughout the seven books, according to the wordcloud, we also get the main characters are "Harry", "Ron", "Hermione", "Dumbledore" and "Hagrid"... And some common words are "looked", "time", "magic", "eyes"...
+```
+
+** Find the most common positive and negative words **
+
+```{r}
+sevenbook%>%
+  inner_join(get_sentiments("bing"))%>%
+  count(word,sentiment,sort=T)%>%
+  acast(word~sentiment,value.var="n",fill=0)%>%
+  comparison.cloud(colors=c("#F8766D", "#00BFC4"),
+                   max.words=50)  
+
+# From the word cloud, we find that the most common positive words throughout the series are "magic", "top", "happy", "gold", "love", "nice"... And the most common negative words are "dark", "fell", "hard", "death"...
+```
+
+## 6. What is the relationship of words in Harry Potter? Create bigram and analyze the relationship between words.
+
+```{r}
+# Examine the most common bigrams
+
+bigram_n
+
+# The most common bigrams are some we are not interested in, such as " of the ", "in the ". And most of them are in stop words.
+```
+
+
+```{r}
+# Remove cases where either is a stop-word
+# new bigram counts
+
+bigram_counts
+
+# We can see that names are the most common pairs in Harry Potter series. 
+
+
+# The table shows the number of occurence of any 2 characters among "Harry", "Ron" and "Hermione"
+
+character_relationship
+
+# Harry and ron usually appear together. 
+# Also, Ron and Hermione usually appear together.
+```
+
+
+```{r}
+# Unite and analyze
+
+bigrams_united
+
+# And Professor Mcgonagall is a common character in Harry Potter. From the plot, we find that in the book "Order Of the Phoenix" , the frequency goes up.
+
+united_graph
+
+# We find that in goblet_of_fire, Harry and Ron usually appear together. 
+
+bigram_harry
+
+```
+
+```{r}
+# Analyze sentiment associated with Harry with "AFINN"
+
+harry_sentiment 
+
+# The figure shows the common positive and negative sentiment words associated with "Harry".
+
+harry_graph
+
+
+```
+
+
+** network of bigrams **
+
+
+```{r}
+# Filter for only relatively common combination ( the occurrences of the 2 words are more than 60 )
+
+bigram_graph
+```
+
+
+```{r}
+
+# From the figure, we can visualize relational tidy data of the Harry Potter. The figure corresponds to the table (bigram_counts) we get. "Professor Mcgonagall", " Uncle Vernon "... are common combinations.
+
+network
+```

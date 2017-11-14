@@ -1,0 +1,40 @@
+---
+title: "Paper"
+author: "Julia Mullokandova"
+date: "November 6, 2017"
+output: html_document
+---
+
+## Background 
+Harry Potter is a very popular series written by J.K. Rowling.There are a total of seven books published between 1997 and 2007. The goal of this assignment was to clean and analyze the text for each of the seven books. Some of the concepts focused on include sentiment analysis, character repetition, and word count. Most of the data presented in this file is based on Harry Potter and the Order of the Phoenix.
+
+## The Data
+This data was obtained by downloading the harry potter package from the library. The data was cleaned based on the function that was created. 
+
+
+## Q1:How the sentiment changes across the entire book?
+![*Fig. 1* ](graph/HP_Q1.png)
+
+## Q2:What are the most common words by chapter?
+![*Fig. 2a* ](graph/HP_Q2a.png)
+![*Fig. 2b* ](graph/HP_Q2b.png)
+![*Fig. 2c* ](graph/HP_Q2c.png)
+
+
+## Q3:Which characters appear the most?
+![*Fig. 3* ](graph/HP_Q3.png)
+
+## Q4:How the emotion anticipation changes throughout the book?
+![*Fig. 4* ](graph/HP_Q4.png)
+
+## Q5:What is the word count for each book?
+```{r}
+load("data/count_hp5.Rda")
+knitr::kable(count_hp5)
+```
+
+## Q6:What are all of the sentiments in the order of the phoenix?
+![*Fig. 6* ](graph/HP_Q6.png)
+
+
+

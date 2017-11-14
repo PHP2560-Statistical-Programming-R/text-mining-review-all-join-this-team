@@ -1,0 +1,33 @@
+---
+title: "Questions"
+author: "Brian Gilbert"
+date: "October 18, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Using the RTextTools NYTimes data set (sample of headlines from 1996-2006)
+
+## Anna
+
+How often are there extremes as measured by NRC?
+Are there some topics that tend to include more extreme words?
+
+## Brian
+How do the different sentiment dictionaries correlate with each other?
+Attempt to create a classifier for topic code
+=======
+
+## Linde
+Figure out what the topic codes mean - i.e. which topics do each typically address? 
+
+## Olivia
+Are titles in all caps more likely to express negative sentiments than positive ones?
+(Compare emotions/sentiments of all caps titles to those of lowercase titles)
+
+
+
+

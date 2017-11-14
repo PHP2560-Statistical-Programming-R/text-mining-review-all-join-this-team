@@ -1,0 +1,222 @@
+---
+title: "Text Analyis"
+output: github_document
+---
+
+# Your mission
+
+Perform text analysis.
+
+## Okay, I need more information
+
+Perform sentiment analysis or topic modeling using text analysis methods as demonstrated in the pre-class work and in the readings.
+
+## Okay, I need even more information.
+
+Do the above. Can't think of a data source?
+
+- `gutenbergr`
+- `AssociatedPress` from the `topicmodels` package
+- `NYTimes` or `USCongress` from the `RTextTools` package
+- Harry Potter Complete 7 Books text
+    ```
+    if (packageVersion("devtools") < 1.6) {
+  install.packages("devtools")
+}
+
+devtools::install_github("bradleyboehmke/harrypotter")
+    ```
+- [State of the Union speeches](https://pradeepadhokshaja.wordpress.com/2017/03/31/scraping-the-web-for-presdential-inaugural-addresses-using-rvest/)
+- Scrape tweets using [`twitteR`](https://www.credera.com/blog/business-intelligence/twitter-analytics-using-r-part-1-extract-tweets/)
+
+Analyze the text for sentiment OR topic. **You do not need to do both**. The datacamp courses and [Tidy Text Mining with R](http://tidytextmining.com/) are good starting points for templates to perform this type of analysis, but feel free to *expand beyond these examples*.
+
+# Timelines and Task
+
+
+We will spend the next 2 weeks working on analyzing textual data in R. You will do the following:
+
+- Start with some text based data.
+- Clean data and prepare it for analysis
+- Ask questions about the data
+- Answer these questions with the data using tables and graphics
+- Each group member must have their own unique question that they code the answer for. 
+----------------------
+```{r}
+############### CLEANING #############################
+#data from https://www.kaggle.com/rounakbanik/ted-talks#
+
+library(readr)
+library(dplyr)
+library(tidytext)
+library(stringr)
+library(rebus)
+library(ggplot2)
+
+##read in main data set
+ted_main <- read_csv("~/text-mining-in-class-team6/TedTalks/ted_main.csv")
+
+##read in transcripts
+transcripts <- read_csv("~/text-mining-in-class-team6/TedTalks/transcripts.csv")
+
+###combine data sets
+full_data <- inner_join(ted_main, transcripts, by = "url")
+
+###remove any text in the transcript that is surrounded by parenthesis
+
+for (i in 1:nrow(full_data)){
+  full_data[i, "transcript"] = 
+    str_replace_all(
+      full_data[i, "transcript"],
+      pattern = "\\([^()]+\\)", 
+      " "
+    )
+}
+
+### Convert Unix time to a date:
+
+  #mutate(year = year(as.Date(as.POSIXct(transcripts_bing$film_date, origin="1970-01-01"))))
+
+######### get main rating for each talk #######
+
+for(i in 1:nrow(full_data)) {
+  rating_string <- str_sub(full_data$ratings[i], 2,-2)
+  rating_vector <- unlist(strsplit(rating_string, split="}"))
+  names <- str_extract_all(rating_vector, pattern = "'name': '" %R% one_or_more(WRD) %R% optional('-') %R% 
+                             one_or_more(WRD), simplify = T)
+  names <- str_replace(names, pattern = "'name': '", "")
+  counts <- str_extract_all(rating_vector, pattern = "'count': " %R% one_or_more(DGT), simplify = T)
+  counts <- str_replace(counts, pattern = "'count': ", "")
+  full_data$max_rating[i] <- names[which.max(counts)]
+}
+
+
+transcripts_clean <- full_data %>% unnest_tokens(word, transcript)
+
+sentiments_bing <- transcripts_clean %>% inner_join(get_sentiments("bing")) 
+                
+sentiments_nrc <- transcripts_clean %>% inner_join(get_sentiments("nrc")) %>% filter(!word %in% c("like"))
+```
+
+```{r}
+############### ANALYZING #############################
+
+word_counts <- sentiments_bing %>%
+  count(max_rating, word) %>%
+  group_by(max_rating) %>%
+  mutate(rating_counts = sum(n)) %>%
+  ungroup() %>%
+  mutate(prop = n / rating_counts) 
+
+top <- word_counts %>%
+  group_by(max_rating) %>%
+  top_n(n = 10, wt = prop) %>%
+  ungroup() %>%
+  arrange(desc(prop)) 
+
+ggplot(top, aes(reorder(word, prop), prop, fill = max_rating)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~max_rating, scales = "free") +
+  coord_flip() + 
+  ylab("") +
+  xlab("Top Ten Words") + 
+  ggtitle("Top Ten Words used in Ted Talks by rating")
+```
+
+
+
+```{r}
+#######what are the most common sentiments within ted talks grouped by their most popular rating#########
+
+sentiment_plot <- sentiments_nrc %>%
+  filter(!sentiment %in% c("positive", "negative")) %>%
+  count(max_rating, sentiment) %>%
+  group_by(max_rating) %>%
+  mutate(sentiment_count = sum(n)) %>%
+  ungroup() %>%
+  mutate(prop = n/ sentiment_count)
+
+ggplot(sentiment_plot, aes(sentiment, prop, fill = max_rating)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~max_rating, scales = "free", labeller = ) +
+  coord_flip() + 
+  ylab("") + 
+  xlab("Sentiment") +
+  ggtitle("Distribution of Sentiments of Words used in Ted Talks by Rating")
+
+
+```
+
+```{r}
+#######what's the average sentiment//how positive/negative is each talk grouped by popular rating#########
+pos_neg <- sentiments_bing %>%
+  count(max_rating, sentiment) %>%
+  group_by(max_rating) %>% 
+  mutate(sentiment_count = sum(n)) %>%
+  ungroup() %>%
+  mutate(prop = n / sentiment_count)
+  
+ggplot(pos_neg, aes(sentiment, prop, fill = max_rating)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~max_rating, scales = "free", labeller = ) +
+  coord_flip() + 
+  ggtitle("Frequency of Postive + Negative words used in Ted Talks by rating") + 
+  xlab("") + 
+  ylab("")
+
+```
+
+
+```{r}
+words_used <- transcripts_clean %>%
+  count(max_rating, word) %>%
+  group_by(max_rating) %>% 
+  mutate(word_count = sum(n)) %>%
+  top_n(n = 10, wt = word_count) %>%
+  ungroup() %>%
+  mutate(prop = n / word_count)
+
+
+ggplot(words_used, aes(word, prop, fill = max_rating)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~max_rating, scales = "free") +
+  coord_flip()
+```
+
+```{r}
+#### what are the most used words among all ted talks###
+word_freq <- sentiments_bing %>%
+  group_by(word) %>%
+  count() %>%
+  ungroup() %>%
+  top_n(50)
+
+ggplot(word_freq, aes(reorder(word,n), n)) + 
+  geom_col(show.legend = FALSE) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+###decide to remove the word "Like" from further analysis -- it does not have a sentiment and has almost
+###double the frequency of the next most common word
+```
+
+```{r}
+### what is the distribution of ratings given to ted talks ###
+rating_dist <- transcripts_clean %>%
+  distinct(name, max_rating) %>%
+  group_by(max_rating) %>%
+  count()
+
+ggplot(rating_dist, aes(reorder(max_rating, n), n, fill = max_rating)) +
+  geom_col(show.legend = FALSE) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  xlab("Max Rating") + 
+  ylab("Count") +
+  ggtitle("Distribution of Max Ratings given to all Ted Talks")
+```
+
+```{r}
+### compare word use or pos/neg sentiment across TED events ###
+```
+
+

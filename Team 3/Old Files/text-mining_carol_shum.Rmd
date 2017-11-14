@@ -1,0 +1,334 @@
+---
+title: "Text Analyis"
+output: github_document
+---
+
+
+
+
+# Your mission
+
+Perform text analysis.
+
+## Okay, I need more information
+
+Perform sentiment analysis or topic modeling using text analysis methods as demonstrated in the pre-class work and in the readings.
+
+## Okay, I need even more information.
+
+Do the above. Can't think of a data source?
+
+- `gutenbergr`
+- `AssociatedPress` from the `topicmodels` package
+- `NYTimes` or `USCongress` from the `RTextTools` package
+- Harry Potter Complete 7 Books text
+    ```
+    if (packageVersion("devtools") < 1.6) {
+  install.packages("devtools")
+}
+
+devtools::install_github("bradleyboehmke/harrypotter")
+    ```
+- [State of the Union speeches](https://pradeepadhokshaja.wordpress.com/2017/03/31/scraping-the-web-for-presdential-inaugural-addresses-using-rvest/)
+- Scrape tweets using [`twitteR`](https://www.credera.com/blog/business-intelligence/twitter-analytics-using-r-part-1-extract-tweets/)
+
+Analyze the text for sentiment OR topic. **You do not need to do both**. The datacamp courses and [Tidy Text Mining with R](http://tidytextmining.com/) are good starting points for templates to perform this type of analysis, but feel free to *expand beyond these examples*.
+
+# Timelines and Task
+
+
+We will spend the next 2 weeks working on analyzing textual data in R. You will do the following:
+
+- Start with some text based data.
+- Clean data and prepare it for analysis
+- Ask questions about the data
+- Answer these questions with the data using tables and graphics
+- Each group member must have their own unique question that they code the answer for. 
+
+```{r}
+#add libraries
+library(tidytext)
+library(rebus)
+library(stringi)
+library(stringr)
+library(harrypotter)
+
+#Gather data
+bing=get_sentiments("bing")
+
+titles <- c("Philosopher's Stone", "Chamber of Secrets", "Prisoner of Azkaban",
+            "Goblet of Fire", "Order of the Phoenix", "Half-Blood Prince",
+            "Deathly Hallows")
+  
+books <- list(philosophers_stone , chamber_of_secrets, prisoner_of_azkaban,
+           goblet_of_fire, order_of_the_phoenix, half_blood_prince,
+           deathly_hallows
+           )
+
+series <- tibble()
+
+for(l in 1:seq_along(books)){
+  for(i in 1:seq_along(books[l]))
+   clean= tibble(txt=books[l][[i]]) 
+   clean %>% mutate(title=titles[l], chapter=i) %>% unnest_tokens(word, txt, to_lower=F) 
+  series <- rbind(series, clean)
+}
+
+
+
+```
+
+
+```{r}
+#Questions:
+#(1) How the sentiment changes across the entire book
+#(2) WHat are the most common words by chapter
+#(3) Which characters appear the most 
+#(4) How the emotion anticipation changes throughtout the book
+#(5) Word count for each book
+
+
+#Gather libraries
+library(plyr)
+library(dplyr)
+library(tidytext)
+library(stringr)
+library(stringi)
+library(ggplot2)
+library(harrypotter)
+library(rebus)
+library(tokenizers)
+library(tm)
+
+#Gather data
+book_names <- list(philosophers_stone, chamber_of_secrets, prisoner_of_azkaban, goblet_of_fire, order_of_the_phoenix, half_blood_prince, deathly_hallows)
+
+names(book_names) <- c("philosophers_stone", "chamber_of_secrets", "prisoner_of_azkaban", "goblet_of_fire", "order_of_the_phoenix", "half_blood_prince", "deathly_hallows")
+
+#divide books, put into datasets
+books = vector(mode = "list", length = 7)
+for(i in 1:length(books)){
+  data <- data_frame(text = book_names[[i]])
+  data <- mutate(data, chapter = c(1:nrow(data)), title = names(book_names)[i])
+  data <- data %>%
+    unnest_tokens(word, text, to_lower = TRUE)
+  books[[i]] <- data
+}
+
+
+
+#Carol will be working on Goblet of Fire:
+#(1) How the sentiment changes across the entire book
+bing <- get_sentiments("bing")
+cs_book= books[[4]]
+sentiment_4=inner_join(cs_book, bing) #merge sentiments
+percents <- sentiment_4 %>% dplyr::group_by(chapter) %>% dplyr::count(sentiment) %>% dplyr:: mutate(total_words=sum(n), percent=n/total_words) #get percentage of words 
+
+#plot positives versus negatives
+ggplot(percents, aes(x = chapter, y = percent, fill=sentiment)) +geom_bar(stat='identity', color='black')+
+  guides(fill=guide_legend(reverse=T)) +
+  scale_fill_brewer(palette='Blues')+
+  ggtitle("Sentiments Per Chapter")+
+  ylab("Percentage") + 
+  xlab("Chapter")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+#(2) What are the most common words by chapter
+
+#create stop words
+stop=c(stopwords("en"), 'said', 'mr', 'mrs', 'he', 'she', 'it', 'they', 'i', 'you', 'professor', 'The', 'I', 'He', 'She', 'It')
+
+#filter out stop words and then get their percentage per chapter, use only words with more than 1% per chapter
+comm_words<-cs_book %>% dplyr::filter(!word %in% stop) %>% dplyr::group_by(chapter) %>% dplyr::count(word) %>% dplyr::arrange(desc(n)) %>% dplyr::rename(count=n)%>% dplyr::mutate(total=sum(count), percent=count/total) %>% filter(percent>0.01)
+
+#plot most common words
+ggplot(comm_words, aes(x=percent, y=reorder(word, percent)))+
+  geom_point(size=1, aes(color=factor(chapter)))+
+  theme_classic()+
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(), 
+        panel.grid.major.y = element_line(color='grey', linetype = "dashed"), 
+        plot.title = element_text(hjust = 0.5))+
+  ggtitle("Most Common Words")+
+  ylab("Words") + 
+  xlab("Mentioned By Percentage of Each Chapter")
+
+
+#(3) Which characters appear the most 
+books = vector(mode = "list", length = 7)
+for(i in 1:length(books)){
+  data <- data_frame(text = book_names[[i]])
+  data <- mutate(data, chapter = c(1:nrow(data)), title = names(book_names)[i])
+  data <- data %>%
+    unnest_tokens(word, text, to_lower = F)
+  books[[i]] <- data
+}
+#capitalize first letter of each word
+cap_stop=stri_trans_totitle(stop)
+#create pattern to grab 
+pattern1=START %R% UPPER %R% optional(zero_or_more(ANY_CHAR) %R% SPC %R% UPPER)
+Char_4<-str_subset(books[[4]]$word, pattern=pattern1)
+#create a list of characters and then reduce to unique list
+char_list<-data_frame(word=Char_4) %>% filter(!word %in% cap_stop) %>% unique()
+#join the characters, calculate percentage per character
+char_list_2<-right_join(books[[4]], char_list) %>% dplyr::count(word)  %>% dplyr::arrange(desc(n)) %>% dplyr::filter(n>100)%>% dplyr::mutate(total=sum(n), percent=n/total)
+
+#plot percentages
+ggplot(char_list_2, aes(x=percent, y=reorder(word, percent)))+
+  geom_point(size=2)+
+  theme_classic()+
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(), 
+        panel.grid.major.y = element_line(color='grey', linetype = "dashed"), 
+        plot.title = element_text(hjust = 0.5))+
+  ggtitle("Most Appeared Charcters")+
+  ylab("Characters Names") + 
+  xlab("Mentioned By Percentage of The Book")
+
+
+
+#(4) How the emotion anticipation changes throughtout the book
+#get anticipation
+nrc <- get_sentiments("nrc") %>% filter(sentiment=='anticipation')
+cs_book= books[[4]]
+anti_4=inner_join(cs_book, nrc)#join anticipation
+percents_4 <- anti_4 %>% dplyr::group_by(chapter) %>% dplyr::count(sentiment)
+
+#create y-axis marks for labeling
+y_label_above=(percents_4$n+10)
+y_label_below=(percents_4$n-5)
+differences=c(0,diff(percents_4$n))
+y_label=rep(0, length(differences))
+choose_label=cbind(y_label_below, y_label_above, differences, y_label)
+#choose the axis points: if the point is higher than the previous point then place label above the point, if not, then below the point:
+y_label=sapply(1:nrow(choose_label), function(x,y) if(y[x,3]>=0){y[x,4]=y[x,2]}else{y[x,4]=y[x,1]}, y=choose_label) 
+y_label=data_frame(y_label)
+y_label=y_label %>% mutate(chapter=row_number())
+percents_4=inner_join(percents_4, y_label) #join the points
+
+#plot points
+ggplot(percents_4, aes(x=chapter, y=n, label=n))+
+  geom_line()+
+  geom_point(size=1, shape=21, fill='white')+
+  geom_text(aes(y=y_label, label=n), vjust=1.5, color='black')+   ggtitle("Changes in Anticipation")+
+  ylab("Anticipation") + 
+  xlab("Chapter")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+
+#(5) Word count for each book
+word_count<-cs_book %>% dplyr::summarise(total_words=n())
+
+
+#(6) Individual Question: How many beasts in the Fantastic Beasts book were mentioned in all the Harry Potter books?
+
+#list the beasts
+beasts<-c('Acromantula'
+,'Ashwinder' 
+,'Augurey' 
+,'Basilisk' 
+,'Billywig'
+,'Bowtruckle'
+,'Bundimun'
+,'Centaur'
+,'Chimaera'
+,'Chizpurfle'
+,'Clabbert'
+,'Crup'
+,'Demiguise'
+,'Diricawl'
+,'Doxy'
+,'Dragon'
+,'Opaleye'
+,'Fireball'
+,'Hebridean'
+,'Horntail'
+,'Ridgeback'
+,'Vipertooth'
+,'Longhorn'
+,'Short-Snout'
+,'Ironbelly'
+,'Dugbog'
+,'Erkling'
+,'Erumpent'
+,'Fairy'
+,'Crab'
+,'Flobberworm'
+,'Fwooper'
+,'Ghoul'
+,'Glumbumble'
+,'Gnome'
+,'Graphorn'
+,'Griffin'
+,'Grindylow'
+,'Hidebehind'
+,'Hippocampus'
+,'Hippogriff'
+,'Hodag'
+,'Horklump'
+,'Imp'
+,'Jarvey'
+,'Jobberknoll'
+,'Kappa'
+,'Kelpie'
+,'Knarl'
+,'Kneazle'
+,'Leprechaun'
+,'Lethifold'
+,'Lobalug'
+,'Malaclaw'
+,'Manticore'
+,'Merpeople'
+,'Moke'
+,'Mooncalf'
+,'Murtlap'
+,'Niffler'
+,'Nogtail'
+,'Nundu'
+,'Occamy'
+,'Phoenix'
+,'Pixie'
+,'Plimpy'
+,'Pogrebin'
+,'Porlock'
+,'Puffskein'
+,'Quintaped'
+,'Ramora'
+,'Red Cap'
+,'Reem'
+,'Runespoor'
+,'Salamander'
+,'Serpent'
+,'Shrake'
+,'Snallygaster'
+,'Snidget'
+,'Sphinx'
+,'Streeler'
+,'Tebo'
+,'Thunderbird'
+,'Troll'
+,'Unicorn'
+,'Wampus'
+,'Werewolf'
+,'Winged horse'
+,'Yeti')
+beasts=data_frame(word=beasts, beasts=beasts)
+
+#join the beasts in each book
+hpbeasts<-lapply(1:7, function(x) inner_join(books[[x]], beasts))
+hpbeasts<-bind_rows(hpbeasts) #put the lists into one dataset
+hpbeasts <- hpbeasts %>% dplyr::group_by(title) %>% dplyr::count(beasts) %>% dplyr:: mutate(total_words=sum(n), percent=n/total_words, y_label=cumsum(percent))
+
+#plot beasts mentioned, stacked by title
+ggplot(hpbeasts, aes(x = beasts, y = n)) +
+  geom_bar(stat='identity', aes(fill=title))+
+  theme(axis.text.x = element_text(size=.00005)) +
+  ggtitle("Fantastic Beasts in Happy Potter Series")+
+  ylab("Number of Times Mentioned") + 
+  xlab("Beasts")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  coord_flip()
+ 
+```
+

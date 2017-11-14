@@ -1,0 +1,271 @@
+```{r}
+############### CLEANING #############################
+#data from https://www.kaggle.com/rounakbanik/ted-talks #
+
+library(readr)
+library(dplyr)
+library(tidytext)
+library(stringr)
+library(rebus)
+library(ggplot2)
+
+##read in main data set
+ted_main <- read_csv("~/text-mining-in-class-team6/TedTalks/ted_main.csv")
+
+##read in transcripts
+transcripts <- read_csv("~/text-mining-in-class-team6/TedTalks/transcripts.csv")
+
+###combine data sets
+full_data <- inner_join(ted_main, transcripts, by = "url")
+
+###remove any text in the transcript that is surrounded by parenthesis
+
+for (i in 1:nrow(full_data)){
+  full_data[i, "transcript"] = 
+    str_replace_all(
+      full_data[i, "transcript"],
+      pattern = "\\([^()]+\\)", 
+      " "
+    )
+}
+
+### Convert Unix time to a date:
+
+mutate(year = year(as.Date(as.POSIXct(transcripts_bing$film_date, origin="1970-01-01"))))
+
+######### get main rating for each talk #######
+
+for(i in 1:nrow(full_data)) {
+  rating_string <- str_sub(full_data$ratings[i], 2,-2)
+  rating_vector <- unlist(strsplit(rating_string, split="}"))
+  names <- str_extract_all(rating_vector, pattern = "'name': '" %R% one_or_more(WRD) %R% optional('-') %R% 
+                             one_or_more(WRD), simplify = T)
+  names <- str_replace(names, pattern = "'name': '", "")
+  counts <- str_extract_all(rating_vector, pattern = "'count': " %R% one_or_more(DGT), simplify = T)
+  counts <- str_replace(counts, pattern = "'count': ", "")
+  full_data$max_rating[i] <- names[which.max(counts)]
+}
+
+
+transcripts_clean <- full_data %>% unnest_tokens(word, transcript)
+
+sentiments_bing <- transcripts_clean %>% inner_join(get_sentiments("bing")) 
+                
+sentiments_nrc <- transcripts_clean %>% inner_join(get_sentiments("nrc")) %>% filter(!word %in% c("like"))
+```
+
+
+```{r}
+### what is the distribution of ratings given to ted talks ###
+rating_dist <- transcripts_clean %>%
+  distinct(name, max_rating) %>%
+  group_by(max_rating) %>%
+  count()
+
+ggplot(rating_dist, aes(reorder(max_rating, n), n, fill = max_rating)) +
+  geom_col(show.legend = FALSE) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  xlab("Max Rating") + 
+  ylab("Count") +
+  ggtitle("Distribution of Max Ratings given to all Ted Talks")
+```
+
+```{r}
+#### what are the most used words among all ted talks###
+word_freq <- sentiments_bing %>%
+  group_by(word) %>%
+  count() %>%
+  ungroup() %>%
+  top_n(50)
+
+ggplot(word_freq, aes(reorder(word,n), n, fill = 10)) + 
+  geom_col(show.legend = FALSE) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+###decide to remove the word "Like" from further analysis -- it does not have a sentiment and has almost
+###double the frequency of the next most common word
+##will also remove the word "right" because the meaning is not obvious out of context
+```
+
+```{r}
+#######what are the most common sentiments within ted talks grouped by their most popular rating#########
+
+sentiment_plot <- sentiments_nrc %>%
+  filter(!word %in% c("like", "right")) %>%
+  filter(!sentiment %in% c("positive", "negative")) %>%
+  count(max_rating, sentiment) %>%
+  group_by(max_rating) %>%
+  mutate(sentiment_count = sum(n)) %>%
+  ungroup() %>%
+  mutate(prop = n/ sentiment_count)
+
+ggplot(sentiment_plot, aes(sentiment, prop, fill = max_rating)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~max_rating, scales = "free", labeller = ) +
+  coord_flip() + 
+  ylab("") + 
+  xlab("Sentiment") +
+  ggtitle("Distribution of Sentiments of Words used in Ted Talks by Rating")
+
+
+```
+
+```{r}
+##### what are the top ten words used within ted talks grouped by their most popular rating #####
+
+word_counts <- sentiments_bing %>%
+  filter(!word %in% c("like","right")) %>%
+  count(max_rating, word) %>%
+  group_by(max_rating) %>%
+  mutate(rating_counts = sum(n)) %>%
+  ungroup() %>%
+  mutate(prop = n / rating_counts) 
+
+top <- word_counts %>%
+  group_by(max_rating) %>%
+  top_n(n = 10, wt = prop) %>%
+  ungroup() %>%
+  arrange(desc(prop)) 
+
+ggplot(top, aes(reorder(word, prop), prop, fill = max_rating)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~max_rating, scales = "free") +
+  coord_flip() + 
+  ylab("") +
+  xlab("Top Ten Words") + 
+  ggtitle("Top Ten Words used in Ted Talks by rating")
+```
+
+
+
+```{r}
+#######what's the average sentiment//how positive/negative is each talk grouped by popular rating#########
+pos_neg <- sentiments_bing %>%
+  filter(!word %in% c("like", "right")) %>%
+  count(max_rating, sentiment) %>%
+  group_by(max_rating) %>% 
+  mutate(sentiment_count = sum(n)) %>%
+  ungroup() %>%
+  mutate(prop = n / sentiment_count)
+  
+ggplot(pos_neg, aes(sentiment, prop, fill = max_rating)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~max_rating, scales = "free", labeller = ) +
+  coord_flip() + 
+  ggtitle("Frequency of Postive + Negative words used in Ted Talks by rating") + 
+  xlab("") + 
+  ylab("")
+
+#we will look further at Courageous, Obnoxious, and OK talks
+```
+
+```{r}
+sentiments_bing %>%
+  filter(!word %in% c("like", "right")) %>%
+    filter(max_rating %in% c("Courageous")) %>%
+    count(word, sentiment) %>%
+    group_by(sentiment) %>%
+    top_n(20) %>%
+    ungroup() %>%
+    mutate(word = reorder(word, n)) %>%
+    ggplot(aes(x = word, y= n, fill = sentiment)) +
+    geom_col(show.legend = FALSE) +
+    ylab("count") +
+    facet_wrap(~ sentiment, scales = "free") +
+    coord_flip() +
+    ggtitle("Top 20 Words That Contributed to Postive + Negative Sentiment when Rating is Courageous")
+
+```
+
+```{r}
+sentiments_nrc %>%
+  filter(!word %in% c("like", "right")) %>%
+    filter(max_rating %in% c("Courageous")) %>%
+    count(word, sentiment) %>%
+    group_by(sentiment) %>%
+    top_n(20) %>%
+    ungroup() %>%
+    mutate(word = reorder(word, n)) %>%
+    ggplot(aes(x = word, y= n, fill = sentiment)) +
+    geom_col(show.legend = FALSE) +
+    ylab("count") +
+    facet_wrap(~ sentiment, scales = "free") +
+    coord_flip() +
+    ggtitle("Top 20 Words That Contributed to Sentiment when Rating is Courageous")
+```
+
+
+
+
+```{r}
+sentiments_bing %>%
+    filter(max_rating %in% c("Obnoxious")) %>%
+    count(word, sentiment) %>%
+    group_by(sentiment) %>%
+    top_n(n=20) %>%
+    ungroup() %>%
+    mutate(word = reorder(word, n)) %>%
+    ggplot(aes(x = word, y= n, fill = sentiment)) +
+    geom_col(show.legend = FALSE) +
+    ylab("count") +
+    facet_wrap(~ sentiment, scales = "free") +
+    coord_flip() +
+    ggtitle("Top 20 Words That Contributed to Postive + Negative Sentiment when Rating is Obnoxious")
+
+```
+```{r}
+
+
+sentiments_nrc %>%
+  filter(!word %in% c("like", "right")) %>%
+    filter(max_rating %in% c("Obnoxious")) %>%
+    count(word, sentiment) %>%
+    group_by(sentiment) %>%
+    top_n(20) %>%
+    ungroup() %>%
+    mutate(word = reorder(word, n)) %>%
+    ggplot(aes(x = word, y= n, fill = sentiment)) +
+    geom_col(show.legend = FALSE) +
+    ylab("count") +
+    facet_wrap(~ sentiment, scales = "free") +
+    coord_flip() +
+    ggtitle("Top 20 Words That Contributed to Sentiment when Rating is Obnoxious")
+```
+
+```{r}
+sentiments_bing %>%
+  filter(!word %in% c("like", "right")) %>%
+    filter(max_rating %in% c("OK")) %>%
+    count(word, sentiment) %>%
+    group_by(sentiment) %>%
+    top_n(20) %>%
+    ungroup() %>%
+    mutate(word = reorder(word, n)) %>%
+    ggplot(aes(x = word, y= n, fill = sentiment)) +
+    geom_col(show.legend = FALSE) +
+    ylab("count") +
+    facet_wrap(~ sentiment, scales = "free") +
+    coord_flip() +
+    ggtitle("Top 20 Words That Contributed to Positive + Negative Sentiment when Rating is OK")
+
+```
+
+
+```{r}
+
+sentiments_nrc %>%
+  filter(!word %in% c("like", "right")) %>%
+    filter(max_rating %in% c("OK")) %>%
+    count(word, sentiment) %>%
+    group_by(sentiment) %>%
+    top_n(20) %>%
+    ungroup() %>%
+    mutate(word = reorder(word, n)) %>%
+    ggplot(aes(x = word, y= n, fill = sentiment)) +
+    geom_col(show.legend = FALSE) +
+    ylab("count") +
+    facet_wrap(~ sentiment, scales = "free") +
+    coord_flip() +
+    ggtitle("Top 20 Words That Contributed to Sentiment when Rating is OK")
+```

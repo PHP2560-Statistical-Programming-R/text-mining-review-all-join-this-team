@@ -1,0 +1,56 @@
+---
+title: "Sentiment Analysis - Harry Potter"
+author: "Carolina Velasco"
+date: "11/1/2017"
+output: html_document
+---
+
+
+# The Data
+
+This data comes in the package "harrypotter". It was develped by Bradley Boehmke. The data set includes full text of books 1-7 from J.K. Rowling's Harry Potter series, ready for text analysis. This includes the Philosopher's Stone (book 1), Chamber of Secrets (book 2), Prisoner of Azkaban (book 3), Goblet of Fire (book 4), Order of the Phoenix (book 5), Half-Blood Prince (book 6), and the Deathly Hallows (book 7).
+
+# Group questions: 
+## Question 1:
+What are the most common words by chapter in the book "Chamber of Secrets"?
+
+![](graph/plot1.png)
+
+## Question 2
+What are the most common words in the entire book "Chamber of Secrets"?
+![](graph/plot2.png)
+
+## Question 3: 
+How does sentiment change across the entire book? *(Using afinn lexicon)*
+![](graph/plot3.png)
+
+
+## Question 4: 
+Which 10 characters are mentioned the most?
+![](graph/plot4.png)
+
+
+## Question 5: 
+How does the emotion "anticipation" change throughtout the book?
+![](graph/plot5.png)
+
+
+
+# Individual questions: 
+
+## Question 1:
+Which are the most common positive and negative words in the book "Chamber of Secrets"?
+![](graph/plot6.png)
+
+## Question 2: 
+Which words are the most negative and positive of the book "Chamber of Secrets"?
+![](graph/plot7.png)
+
+## Question 3: 
+What is the percentage of positive words for each chapter? 
+![](graph/plot8.png)
+
+
+## Question 4:
+How does sentiment change across the entire saga? 
+![](graph/plot9.png)

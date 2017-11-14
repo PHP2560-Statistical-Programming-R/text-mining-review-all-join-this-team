@@ -1,0 +1,202 @@
+---
+title: "Text Analyis"
+output: github_document
+---
+
+
+
+
+# Your mission
+
+Perform text analysis.
+
+## Okay, I need more information
+
+Perform sentiment analysis or topic modeling using text analysis methods as demonstrated in the pre-class work and in the readings.
+
+## Okay, I need even more information.
+
+Do the above. Can't think of a data source?
+
+- `gutenbergr`
+- `AssociatedPress` from the `topicmodels` package
+- `NYTimes` or `USCongress` from the `RTextTools` package
+- Harry Potter Complete 7 Books text
+
+```{r, message=FALSE, warning=TRUE}
+
+install.packages("devtools")
+devtools::install_github("bradleyboehmke/harrypotter")
+
+library(harrypotter)
+```
+- [State of the Union speeches](https://pradeepadhokshaja.wordpress.com/2017/03/31/scraping-the-web-for-presdential-inaugural-addresses-using-rvest/)
+- Scrape tweets using [`twitteR`](https://www.credera.com/blog/business-intelligence/twitter-analytics-using-r-part-1-extract-tweets/)
+
+Analyze the text for sentiment OR topic. **You do not need to do both**. The datacamp courses and [Tidy Text Mining with R](http://tidytextmining.com/) are good starting points for templates to perform this type of analysis, but feel free to *expand beyond these examples*.
+
+# Timelines and Task
+
+
+We will spend the next 2 weeks working on analyzing textual data in R. You will do the following:
+
+- Start with some text based data.
+- Clean data and prepare it for analysis
+- Ask questions about the data
+- Answer these questions with the data using tables and graphics
+- Each group member must have their own unique question that they code the answer for.
+
+
+```{r}
+library(plyr)
+library(dplyr)
+library(tidytext)
+library(stringr)
+library(ggplot2)
+
+
+titles <- c("philosophers_stone", "chamber_of_secrets", "prisoner_of_azkaban", "goblet_of_fire", "order_of_the_phoenix", "half_blood_prince", "deathly_hallows")
+
+books <- list(philosophers_stone, chamber_of_secrets, prisoner_of_azkaban,
+           goblet_of_fire, order_of_the_phoenix, half_blood_prince,
+           deathly_hallows)
+  
+series <- tibble()
+
+for(i in seq_along(titles)) {
+        
+        clean <- tibble(chapter = seq_along(books[[i]]),
+                        text = books[[i]]) %>%
+             unnest_tokens(word, text) %>%
+             mutate(book = titles[i]) %>%
+             select(book, everything())
+
+        series <- rbind(series, clean)
+}
+
+series
+series %>%
+  filter (book == "half_blood_prince")
+```
+
+(1) How the sentiment changes across the entire book
+
+
+```{r}
+Book6 <- series %>%
+  filter (book == "half_blood_prince") %>% 
+       inner_join(get_sentiments("afin")) %>%
+       group_by(chapter) %>%
+       summarise(n= sum(score))
+Book6
+
+p1 <- ggplot(Book6, aes(x=chapter, y=n)) +
+      geom_line(show.legend = FALSE, size = 0.3, color = "blue") +
+      scale_color_brewer(palette = "Set1") +
+      geom_smooh(se=FALSE, size = 0.3, linetype = 4, color = "green")
+
+p1+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(),axis.line = element_line(colour = "black") )+
+ xlim(1, 30) +
+scale_x_continuous(
+  breaks = c(1:30)) +
+  geom_hline(yintercept = 0, color = "red") +
+ ylim(-250, 250) +
+  scale_y_continuous(
+    breaks = c(seq(-250,250,by=50)) 
+  )+ 
+  ggtitle("Change in Sentiment in Half-Blood Prince")
+
+```
+
+
+```{r}
+Book6 <- series %>%
+  filter (book == "half_blood_prince") %>% 
+       inner_join(get_sentiments("afin")) %>%
+       group_by(sentiment) %>%
+      ungroup() %>%
+  group_by(chapter) %>%
+  count(sentiment, chapter)
+  
+
+p1 <- ggplot(Book6, aes(x=chapter, y=n, color = sentiment)) +
+      geom_line(show.legend = FALSE, size = 0.3) +
+      scale_color_brewer(palette = "Set1") +
+      geom_smooth(se=FALSE, size = 0.2, linetype = 4)
+
+p1 + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(),axis.line = element_line(colour = "black") )+
+ xlim(1, 30) +
+scale_x_continuous(
+  breaks = c(1:30)) +
+ ylim(1, 280) +
+  breaks = c(seq(1:280, by= ))
+
+```
+
+(2) WHat are the most common words by chapter
+```{r}
+Book6Word <- series %>%
+  filter(book == "half_blood_prince") %>%
+  group_by(chapter)  %>%
+  anti_join(stop_words) %>%
+  count(word, chapter) %>%
+  top_n(1)
+
+Book6Word
+```
+
+(3) Which characters appear the most 
+```{r}
+library(dplyr)
+Book6Char <- series %>%
+         filter(book == "half_blood_prince")  %>%
+         group_by(word) %>%
+         select(word) %>%
+         filter(word == "harry" | 
+                word == "ron" | 
+                word == "hermione" | 
+                word == "dumbledore" |
+                word == "voldemort" | 
+                word == "dobby") %>%
+         count (word, sort = TRUE) %>%
+         arrange (desc(n))
+           
+Book6Char 
+
+ggplot(Book6Char, aes(x=word, y=n)) +
+geom_col(show.legend = FALSE, fill = "lightblue", width  = 0.5)
+```
+
+(4) How the emotion anticipation changes throughtout the book
+```{r}
+Book6Anti <- series %>%
+  filter (book == "half_blood_prince") %>% 
+       inner_join(get_sentiments("nrc"))  %>%
+       group_by(chapter) %>%
+       count (sentiment) %>%
+       filter(sentiment == "anticipation") 
+        
+Book6Anti
+
+ggplot(Book6Anti, aes(x=chapter, y=n)) +
+geom_col(show.legend = FALSE, fill = "blue", width  = 0.5)
+
+
+```
+
+
+(5) Word count for each book
+```{r}
+Book6Count <- series %>%
+  filter(book == "order_of_the_phoenix") %>%
+  group_by(chapter) 
+nrow(book6)
+```
+
+
+
+
+
+

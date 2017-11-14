@@ -1,0 +1,200 @@
+---
+title: "Text Analyis"
+output: github_document
+---
+
+
+
+
+# Your mission
+
+Perform text analysis.
+
+## Okay, I need more information
+
+Perform sentiment analysis or topic modeling using text analysis methods as demonstrated in the pre-class work and in the readings.
+
+## Okay, I need even more information.
+
+Do the above. Can't think of a data source?
+
+- `gutenbergr`
+- `AssociatedPress` from the `topicmodels` package
+- `NYTimes` or `USCongress` from the `RTextTools` package
+- Harry Potter Complete 7 Books text
+
+- [State of the Union speeches](https://pradeepadhokshaja.wordpress.com/2017/03/31/scraping-the-web-for-presdential-inaugural-addresses-using-rvest/)
+- Scrape tweets using [`twitteR`](https://www.credera.com/blog/business-intelligence/twitter-analytics-using-r-part-1-extract-tweets/)
+
+Analyze the text for sentiment OR topic. **You do not need to do both**. The datacamp courses and [Tidy Text Mining with R](http://tidytextmining.com/) are good starting points for templates to perform this type of analysis, but feel free to *expand beyond these examples*.
+
+# Timelines and Task
+
+
+We will spend the next 2 weeks working on analyzing textual data in R. You will do the following:
+
+- Start with some text based data.
+- Clean data and prepare it for analysis
+- Ask questions about the data
+- Answer these questions with the data using tables and graphics
+- Each group member must have their own unique question that they code the answer for. 
+```{r, warning=FALSE}
+
+library(gutenbergr)
+library(dplyr)
+gutenberg_metadata
+data("gutenbergr", package="gutenbergr")
+
+
+#load data 
+Buddhism<- gutenberg_download(18223)
+Bible<- gutenberg_download(10)
+Koran<- gutenberg_download(2800)
+
+```
+
+```{r,warning=FALSE}
+
+library(tidytext)
+library(ggplot2)
+library(directlabels)
+library(gridExtra)
+library(tidyr)
+library(stringr)
+# clean data
+Bible1<-Bible %>% unnest_tokens(word, text)
+Buddhism1<- Buddhism %>% unnest_tokens(word, text)
+Koran1<-Koran %>% unnest_tokens(word, text)
+```
+
+Analysis: The selected books are core guidance for three major religions-Christianity, Buddhism and Islam- in the world, I intend to evaluate sentiment messages conveyed in each book and make comparisons between books to see the different sentiment expressed in different religions.
+
+Questions: What are sentiment words ditributions for each book? What are top10 positive/negative words for each book? Compare positive/negative words proportions for each book. Compare sentiment score per word for each word (The reason I do score per word rather than total score is because total score can be largely affected by the length of the books, so the score per word would be more reasonable). Combine books selected by other group members, and compare them together.
+
+
+```{r}
+#Sentiment words distribution for each book
+#Get the proportion distribution table for Bible
+Bible_prop<-Bible1 %>% inner_join(get_sentiments("nrc"), by="word") %>% group_by(sentiment) %>% count() %>% ungroup() %>% mutate(proportion=n/sum(n)) 
+#Creat Barplot 
+g1_Bi<-ggplot(Bible_prop, aes(x=sentiment,y=proportion,fill=sentiment)) + geom_bar(stat = "identity",show.legend = F)  + xlab("Sentiment Words") + ylab("Proportion") + ylim(0,0.25) + ggtitle("Sentiment words Distribution for Bible")
+
+#Get the proportion distribution table for Buddhism                                                                 
+Buddhism_prop<-Buddhism1 %>% inner_join(get_sentiments("nrc"), by="word") %>% group_by(sentiment) %>% count() %>% ungroup() %>% mutate(proportion=n/sum(n)) 
+#Creat Barplot 
+g1_Bu<-ggplot(Buddhism_prop,aes(x=sentiment,y=proportion,fill=sentiment)) + geom_bar(stat = "identity",show.legend = F) + xlab("Sentiment Words") + ylab("Proportion") + ylim(0,0.25) + ggtitle("Sentiment words Distribution for Buddhism")
+
+#Get the proportion distribution table for Koran
+Koran_prop<-Koran1 %>% inner_join(get_sentiments("nrc"), by="word") %>% group_by(sentiment) %>% count() %>% ungroup() %>% mutate(proportion=n/sum(n))
+g1_Ko<-ggplot(Koran_prop,aes(x=sentiment,y=proportion,fill=sentiment)) + geom_bar(stat = "identity",show.legend = F) + xlab("Sentiment Words") + ylab("Proportion") + ylim(0,0.25) + ggtitle("Sentiment words Distribution for Koran")
+#Combine barplots for comparison
+grid.arrange(g1_Bi,g1_Bu,g1_Ko,ncol=2)
+```
+
+From the comparisons of sentiment words distributions, we can see all of three religions mostly emphaized on postive trust words, so I think in general all these religious are trying to convey positive messages.
+
+
+```{r}
+#Find top10 positive words in each book
+Bible1 %>% inner_join(get_sentiments("bing"), by="word") %>% filter(sentiment=="positive") %>% group_by(word) %>% count() %>% arrange(desc(n)) %>% top_n(10) %>% rename(frequency=n)
+Buddhism1 %>% inner_join(get_sentiments("bing"),by="word") %>% filter(sentiment=="positive") %>% group_by(word) %>% count() %>% arrange(desc(n)) %>% top_n(10) %>% rename(frequency=n)
+Koran1 %>% inner_join(get_sentiments("bing"), by="word") %>% filter(sentiment=="positive") %>% group_by(word) %>% count() %>% arrange(desc(n)) %>% top_n(10) %>% rename(frequency=n)
+```
+
+Besides general positive words like "great","like", Bible used more "holy","heaven","peace", Buddhism focused more on "compassion", "happiness", "wisdom" and "benefit" and Koran emphaized more on "mercy" and "compassion".
+
+
+```{r}
+#Find most negative words in each book
+Bible1 %>% inner_join(get_sentiments("bing"), by="word") %>% filter(sentiment=="negative") %>% group_by(word) %>% count() %>% arrange(desc(n)) %>% top_n(10) %>% rename(frequency=n)
+Buddhism1 %>% inner_join(get_sentiments("bing"), by="word") %>% filter(sentiment=="negative") %>% group_by(word) %>% count() %>% arrange(desc(n)) %>% top_n(10) %>% rename(frequency=n)
+Koran1 %>% inner_join(get_sentiments("bing"), by="word") %>% filter(sentiment=="negative") %>% group_by(word) %>% count() %>% arrange(desc(n)) %>% top_n(10) %>% rename(frequency=n)
+```
+
+Three religious books all talked a lot about "evil", "sin" and "fear". Buddhism talked more about "pity" while Koran talked more about "infidels".
+
+
+```{r}
+#Find positive/negative proportions for each book
+#positive/negative proportion for Bible
+Bible_pn<-Bible1 %>% inner_join(get_sentiments("bing"), by="word") %>% group_by(sentiment) %>% count() %>% ungroup() %>% mutate(proportion=n/sum(n)) %>% select(sentiment,proportion)
+#positive/negative proportion for Buddhism
+Buddhism_pn<-Buddhism1 %>% inner_join(get_sentiments("bing"), by="word") %>% group_by(sentiment) %>% count() %>% ungroup() %>% mutate(proportion=n/sum(n)) %>% select(sentiment,proportion)
+#positive/negative proportion for Buddhism
+Koran_pn<-Koran1 %>% inner_join(get_sentiments("bing"), by="word") %>% group_by(sentiment) %>% count() %>% ungroup() %>% mutate(proportion=n/sum(n)) %>% select(sentiment,proportion)
+#Combine all books
+all_book<-inner_join(Bible_pn,Buddhism_pn,by="sentiment") %>% inner_join(Koran_pn,by="sentiment") %>% rename(Bible=proportion.x, Buddhism=proportion.y,Koran=proportion) %>% 
+#Modify the table to the form that applicable to ggplot
+gather("book","proportion",2:4)
+#Create barplot
+ggplot(all_book,aes(x=book,y=proportion,fill=sentiment))+geom_bar(stat = "identity")
+```
+
+From the plot, we can see that Buddhism is the one has more proportion of positive words than negative words, whereas Bible actually used more negative words and Koran used approximately same amount of postive words to nagetive words.
+
+
+```{r}
+#Sentiment score per word for each book
+Bible_score<-Bible1 %>% inner_join(get_sentiments("afinn"), by="word") %>% summarize(score_per_word=sum(score)/nrow(Bible1))
+Buddhism_score<-Buddhism1 %>% inner_join(get_sentiments("afinn"), by="word") %>% summarize(score_per_word=sum(score)/nrow(Buddhism1))
+Koran_score<-Koran1 %>% inner_join(get_sentiments("afinn"), by="word") %>% summarize(score_per_word=sum(score)/nrow(Koran1))
+score<-rbind(Bible_score,Buddhism_score,Koran_score) %>% mutate(book=c("Bible","Buddhism","Koran"))
+#Create Barplot
+ggplot(score,aes(x=book,y=score_per_word,fill=book)) + geom_bar(stat = "identity", show.legend = FALSE) + xlab("Book") + ylab("Score") + ggtitle("Sentiment score per word")
+```
+
+Generally, Buddhism is most positive book whereas Bible is the least.
+
+
+```{r,warning=FALSE}
+#Combine all books from the group 
+#CML's book
+picture<- gutenberg_download(174)
+picture.clean<- picture %>%  mutate(linenumber = row_number(), chapter = cumsum(str_detect(text, regex("chapter [\\divxlc]", ignore_case = TRUE)))) %>% filter(chapter >0) %>% unnest_tokens(word, text)
+#Score per word for CML's book
+Dorien.score<-picture.clean %>% inner_join(get_sentiments("afinn"), by="word") %>% summarize(score_per_word=sum(score)/nrow(picture.clean))
+#Total score for CML's book
+Dorien.score_t<-picture.clean %>% inner_join(get_sentiments("afinn"), by="word") %>% summarize(score_t=sum(score))
+#Sadia's book
+alice <- gutenberg_download(751)
+alice_tidy<- alice %>%  
+            mutate(linenumber = row_number(), chapter = cumsum(str_detect(text, regex("chapter|CHAPTER [\\divxlc]", ignore_case = TRUE)))) %>% #breaks down the book by chapter and stores the line number
+  filter(chapter >0) %>% unnest_tokens(word, text)
+#Score per word for Sadia's book
+alice_score<-alice_tidy %>% inner_join(get_sentiments("afinn"), by="word") %>% summarize(score_per_word=sum(score)/nrow(alice_tidy))
+#Total score for Sadia's book
+alice_score_t<-alice_tidy %>% inner_join(get_sentiments("afinn"), by="word") %>% summarize(score_t=sum(score))
+#Total scores for my books
+Bible_score_t<-Bible1 %>% inner_join(get_sentiments("afinn"), by="word") %>% summarize(score_t=sum(score))
+Buddhism_score_t<-Buddhism1 %>% inner_join(get_sentiments("afinn"), by="word") %>% summarize(score_t=sum(score))
+Koran_score_t<-Koran1 %>% inner_join(get_sentiments("afinn"), by="word") %>% summarize(score_t=sum(score))
+#Total sentiment score for all books comparison
+score_all_t<-rbind(Bible_score_t,Buddhism_score_t,Koran_score_t,Dorien.score_t,alice_score_t) %>% mutate(book=c("Bible","The Essence of Buddhism","Koran", "Picture of Dorian Gray", "Alice's Adventures in Wonderland"))
+ggplot(score_all_t,aes(x=reorder(book,score_t),y=score_t,fill=book)) + theme_classic() + geom_bar(stat = "identity", show.legend = FALSE) + xlab("") + ylab("Score") + ggtitle("Total Sentiment score for each book") + coord_flip()
+#Sentiment score per word for all books comparison
+score_all<-rbind(Bible_score,Buddhism_score,Koran_score,Dorien.score,alice_score) %>% mutate(book=c("Bible","The Essence of Buddhism","Koran", "Picture of Dorian Gray", "Alice's Adventures in Wonderland"))
+ggplot(score_all,aes(x=reorder(book,score_per_word),y=score_per_word,fill=book)) + theme_classic() + geom_bar(stat = "identity", show.legend = FALSE) + xlab("") + ylab("Score") + ggtitle("Sentiment score per word") + coord_flip()
+```
+
+Though Bible has the highest total score, but Alice's Adventures in Wonderland has highest score per word. That's because Bible is much longer.  Alice's Adventures in Wonderland is a fairy tale, it's a book for children, it actually makes sense that it conveys most positive messages among all books we selected.
+
+
+```{r, warning=FALSE, echo=FALSE}
+library(wordcloud)
+#Wordcloud of most common words of the book
+#wordcloud for Bible
+cloud_Bi<-Bible1 %>% inner_join(get_sentiments("bing"), by="word") %>% count(word, sentiment) %>% arrange(desc(n)) 
+wordcloud(words = cloud_Bi$word, freq = cloud_Bi$n, min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+#wordcloud for Buddhism
+cloud_Bu<-Buddhism1 %>% inner_join(get_sentiments("bing"), by="word") %>% count(word, sentiment) %>% arrange(desc(n)) 
+wordcloud(words = cloud_Bu$word, freq = cloud_Bu$n, min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+#wordcloud for Koran
+cloud_Ko<-Koran1 %>% inner_join(get_sentiments("bing"), by="word") %>% count(word, sentiment) %>% arrange(desc(n)) 
+wordcloud(words = cloud_Ko$word, freq = cloud_Ko$n, min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+```

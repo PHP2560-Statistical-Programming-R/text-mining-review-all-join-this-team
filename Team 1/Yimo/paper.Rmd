@@ -1,0 +1,54 @@
+---
+title: "Harry Potter Text Mining & Sentimental Analysis"
+author: "Yimo Zhang"
+date: "2017.11.06"
+output: html_document
+---
+
+
+## Frequency Analysis
+###1. Who is the most important charecter based on how much he/she was mentioned 
+![*Fig. 1* HP ](graph/q1.png)
+Harry being the main character in the entire series, it’s clear that his name is mentioned with highest frequency. The author did a pretty nice job 
+
+###2. The Difference of Frequency Between Ron and Hermione
+![*Fig. 2* HP ](graph/q2.png)
+
+ Using bing lexicon, Harry Potter and the Order of the Phoenix is the scariest with about 8k negative sentiments
+
+###3. What are the top ten used words in exception to stop words ?
+![*Fig. 3* HP ](graph/q3.png)
+
+###4. what is the most scariest book based on sentiment analysis ?
+![*Fig. 4* HP ](graph/q4.png)
+
+###5. Sentiment by book
+![*Fig.5* HP ](graph/q5.png)
+
+
+###6. The change of "anger" through chapters
+![*Fig.6* HP ](graph/q6.png)
+
+
+
+
+###7. How does sentiment change through chapter?
+![*Fig.7* HP ](graph/q7.png)
+
+
+
+###8. Sentiment by popularity
+![*Fig.8* HP ](graph/q8.png)
+
+###9. Term Frequency
+![*Fig.9* HP ](graph/q9.png)
+
+###10. Zipf's Law
+![*Fig.10* HP ](graph/q10.png)
+
+
+###11. N-grams
+![*Fig.11* HP ](graph/q11.png)
+
+
+

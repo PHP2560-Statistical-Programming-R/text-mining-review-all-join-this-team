@@ -1,0 +1,55 @@
+**Linde Chen**
+================
+
+**Introduction**
+---------------------------
+
+In the internal dataset: NYTimes, we are given a list of newspaper headlines from 1996-2006. These headlines are categoried into topics from Topic Codes 1-31 and Topic Code 99. However, we are not given information about what these Topic Codes describe.
+
+**Questions**
+
+1.  I will investigate the meaning of the Topic Codes through sentiment analysis. Specifically, I'm interested in the sentiments and words associated with the most positive and mmost negative topics. In this way, I hope to establish what categories these particular Topic Codes stand for.
+
+2.  Then, I will investigate the trend of these sentiments and words, as they are used in this news source, over the span of the NYTimes dataset.
+
+From the graph that examines the distribution of mean sentiment scores with respect to each topic code, we discover that most topics contain predominantly negative sentiments. Next, we will examine the topics that 1) either have overwhelmingly negative sentiments, or have 2) predominantly positive sentiments.
+
+![](linde_graphs/unnamed-chunk-8-1.png)
+
+Topic codes 27 and 30, highlighted in red, appear to reflect the most negative sentiments, with mean sentiment scores of -2.210526 and -1.916667, respectively.
+
+![](linde_graphs/unnamed-chunk-10-1.png)
+
+Topic codes 27 and 30, highlighted in green, appear to reflect the most negative sentiments, with mean sentiment scores of 1.065789 and 0.375000, respectively.
+
+**Trend Analysis**
+---------------------------
+
+The two topics with most negative sentiments both address 'death' and 'crash'. I will examine how these two topics have evolved over time. In particular, I will examine the most common causes of death as reported by the NYT, and how that has changed over time.
+
+The two topics with most positive sentiments both address 'win' and 'no'. I will examine how these two topics have evolved over time. In particular, I also will examine the most common reasons for "winning" as reported by the NYT, and how that has changed over time.
+
+![](linde_graphs/unnamed-chunk-18-1.png)
+
+Here, we compare the trend of the usage of the most negative and positive words over time.
+
+We observe the movement in frequency of the most negative words (death and crash) between 1996-2006. The frequency of their usage dips slighly around the year 2000, then bounces back around the year 2003. However, the mean frequency appears to stabalize at around 2.25.
+
+We also observe the movement in frequency of the most positive words (win and no). The frequency of their usage appears to steadily decline over time, although suggesting a slight uptick after the year 2004.
+
+![](linde_graphs/unnamed-chunk-19-1.png)
+
+Here we break down the frequency of negative words usage in the NYTimes headlines by words. We observe dramatic movements in usage of the word "death" between the years 2002 and 2006.
+
+![](linde_graphs/unnamed-chunk-20-1.png)
+
+Here we break down the frequency of positive words usage in the NYTimes headlines by words. It is difficult to draw conclusions and patterns from this graph, as the movement in frequency of positive words usages appears to fluctuate in general for all the positive words under speculation.
+
+**Conclusion**
+---------------------------
+What we can conclude from the above analysis:
+- Most topics contain predominantly negative sentiments
+- The two topics with the most negative sentiments address "death" and "crash"
+- The two topics with the most positive sentiments address "win" and "no"
+- The usage of the words "death" and "crash" appears to remain consistent over 1996-2006; however, 
+we observe a slight decline in the usage of the words "win" and "no" 

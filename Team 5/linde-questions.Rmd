@@ -1,0 +1,192 @@
+---
+title: "Text Analyis"
+author: "Linde Chen"
+output: github_document
+---
+
+## Introduction and Questions:
+
+In the internal dataset: NYTimes, we are given a list of newspaper headlines from 1996-2006. These headlines are categoried into topics from Topic Codes 1-31 and Topic Code 99. However, we are not given information about what these Topic Codes describe. 
+
+1. I will investigate the meaning of the Topic Codes through sentiment analysis. Specifically, I'm interested in the sentiments and words associated with the most positive and mmost negative topics. In this way, I hope to establish what categories these particular Topic Codes stand for. 
+
+2. Then, I will investigate the trend of these sentiments and words, as they are used in this news source, over the span of the NYTimes dataset. 
+
+```{r, include = FALSE, message = FALSE, warning = FALSE}
+options(repos="https://cran.rstudio.com")
+install.packages("RTextTools")
+
+library(RTextTools)
+data(NYTimes)
+```
+
+```{r, include = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+install.packages("tidytext")
+library(tidytext)
+library(dplyr)
+```
+
+```{r, include = FALSE}
+NYTimes$Title = as.character(NYTimes$Title)
+words = unnest_tokens(NYTimes, word, Title)
+sentiments = inner_join(words, get_sentiments("afinn"), by = "word")
+sentiments$Date = as.Date(as.Date(sentiments$Date, format = "%d-%b-%y"), format = "%y-%b-%d")
+```
+
+```{r, include = FALSE}
+by_topic = 
+  # arrange the sentiments dataframe by ascending topic code
+sentiments %>%
+  arrange(Topic.Code)
+
+by_topic
+```
+
+```{r, include = FALSE}
+library(ggplot2)
+
+topic_scores = 
+  # find the mean score for each topic 
+by_topic %>%
+  group_by(Topic.Code) %>%
+  summarise(mean.score = mean(score))
+```
+
+```{r, echo = FALSE}
+plot_scores = 
+  
+ggplot(topic_scores, aes(x = Topic.Code, y = mean.score)) + geom_point(colour = "blue") +
+  xlab ("Topic Code") + ylab("Mean Sentiment Score") + geom_line(y = 0, colour = "navy")
+```
+
+
+From the graph that examines the distribution of mean sentiment scores with respect to each topic code, we discover that most topics contain predominantly negative sentiments. Next, we will examine the topics that either:
+
+1. Have overwhelmingly negative sentiments, or
+2. Have predominantly positive sentiments 
+
+```{r, echo = FALSE}
+negative_topics = 
+  # which topic codes point to topics with the most extreme negative sentiments?
+  topic_scores %>% 
+  arrange(desc(abs(mean.score))) %>%
+  head(2)
+```
+
+```{r, echo = FALSE}
+plot_scores + 
+  geom_point(aes(x = 27, y = -2.210526), size = 3, colour = "red") +
+  geom_point(aes(x = 30, y = -1.916667), size = 3, colour = "red")
+```
+
+Topic codes 27 and 30, highlighted in red, appear to reflect the most negative sentiments, with mean sentiment scores of -2.210526	and -1.916667, respectively.	
+
+```{r, echo = FALSE}
+positive_topics = 
+  # which topics codes point to topics with predominantly positive sentiments?
+  topic_scores %>%
+  arrange(desc(mean.score)) %>%
+  head(2)
+```
+
+```{r, echo = FALSE}
+plot_scores + 
+  geom_point(aes(x = 29, y = 1.065789), size = 3, colour = "forestgreen") +
+  geom_point(aes(x = 21, y = 0.375000), size = 3, colour = "forestgreen")
+```
+
+Topic codes 27 and 30, highlighted in red, appear to reflect the most negative sentiments, with mean sentiment scores of 1.065789 and 0.375000, respectively. 
+
+```{r, include = FALSE}
+word_freq = 
+by_topic %>%
+  # the frequency of specific words used within a certain topic
+  group_by(Topic.Code, word) %>%
+  summarise(freq = n())
+```
+
+```{r, echo = FALSE}
+words_neg = 
+word_freq %>%
+  # investigate what might topic codes 27 and 30 address based on most frequent words used in subject
+  filter(Topic.Code == "27" | Topic.Code == "30") %>%
+  group_by(Topic.Code) %>%
+  top_n(3, freq)
+```
+
+The two topics with most negative sentiments both address 'death' and 'crash'. I will examine how these two topics have evolved over time. In particular, I will examine the most common causes of death as reported by the NYT, and how that has changed over time. 
+
+```{r, echo = FALSE}
+words_pos = 
+word_freq %>%
+  # investigate what might topic codes 21 and 29 address based on most frequent words used in subject
+  filter(Topic.Code == "21" | Topic.Code == "29") %>%
+  group_by(Topic.Code) %>%
+  top_n(3, freq)
+```
+
+The two topics with most positive sentiments both address 'win' and 'no'. I will examine how these two topics have evolved over time. In particular, I also will examine the most common reasons for "winning" as reported by the NYT, and how that has changed over time.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+library(lubridate)
+
+death_freq = 
+by_topic %>%
+  filter(word == "death" | word == "dead" | word == "crash") %>%
+  group_by(year = floor_date(Date, "year"), word) %>%
+  summarise(freq = n())
+
+win_freq = 
+by_topic %>%
+  filter(word == "win" | word == "wins" | word == "no") %>%
+  group_by(year = floor_date(Date, "year"), word) %>%
+  summarise(freq = n())
+```
+
+```{r, include = FALSE}
+death_freq
+win_freq
+```
+
+```{r, include = FALSE, message = FALSE, warning = FALSE}
+library(ggplot2)
+
+plot_neg = 
+ggplot(death_freq, 
+       aes(x = death_freq$year, y = death_freq$freq)) + 
+  geom_point(colour = "red") + geom_smooth(colour = "orange", span = 1) +
+  xlab("Year") + ylab("Freqeuncy of (-) Words") 
+```
+
+```{r, include = FALSE, message = FALSE, warning = FALSE}
+plot_pos = 
+ggplot(win_freq, 
+       aes(x = win_freq$year, y = win_freq$freq)) + 
+  geom_point(colour = "navy") + geom_smooth(colour = "cornflower blue", span = 1) +
+  xlab("Year") + ylab("Freqeuncy of (+) Words")
+```
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+library(ggplot2)
+library(gridExtra)
+grid.arrange(plot_neg, plot_pos, ncol = 1)
+```
+
+Here, we compare the trend of the usage of the most negative and positive words over time. 
+
+We observe the movement in frequency of the most negative words (death and crash) between 1996-2006. The frequency of their usage dips slighly around the year 2000, then bounces back around the year 2003. However, the mean frequency appears to stabalize at around 2.25. 
+
+We also observe the movement in frequency of the most positive words (win and no). The frequency of their usage appears to steadily decline over time, although suggesting a slight uptick after the year 2004. 
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+plot_neg + facet_wrap(~word)
+```
+
+Here we break down the frequency of negative words usage in the NYTimes headlines by words. We observe dramatic movements in usage of the word "death" between the years 2002 and 2006.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+plot_pos + facet_wrap(~word)
+```
+
+Here we break down the frequency of positive words usage in the NYTimes headlines by words. It is difficult to draw conclusions and patterns from this graph, as the movement in frequency of positive words usages appears to fluctuate in general for all the positive words under speculation. 

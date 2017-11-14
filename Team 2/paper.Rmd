@@ -1,0 +1,38 @@
+---
+title: "Paper"
+author: "Catrina Mueller-Leonhard"
+date: "November 5, 2017"
+output: html_document
+---
+
+## Background 
+
+My group decided to compare some of our favorite books. I chose "The Picture of Dorian Gray" by Oscar Wilde. Other books from the group include, "Alice's Adventures in Wonderland", "The Bible", "The Koran" and "The Essence of Buddhism". 
+
+## The Data
+
+This data was obtained by web scraping and also through the gutenbergr package in R. 
+
+## The Picture of Dorian Gray
+
+Below are the graphs that are applicable to my sentiment mining of The Picture of Dorian Gray: 
+
+![*Fig. 1* Book Sentiment Count](graph/sentiment_count_PDG.png)
+
+![*Fig. 2* Bargraph of Sentiments Per Chapter](graph/Bargraph_PDG.png)
+
+![*Fig. 3* Sentiment Per Chapter](graph/Sentiment_Per_Chapter_PDG.png)
+
+![*Fig. 4* Overall Score as the Book Progresses](graph/chapter_score_PDG.png)
+
+## Wordcloud for The Picture of Dorian Gray
+
+![*Fig. 5* Wordcloud of The Picture of Dorian Grap](graph/wordcloud_PDG.png)
+
+
+## Group Comparisons
+
+
+![*Fig. 5* Comparison of Total Book Scores](graph/Total_comparison.png)
+
+

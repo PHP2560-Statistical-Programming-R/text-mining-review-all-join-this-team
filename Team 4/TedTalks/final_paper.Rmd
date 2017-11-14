@@ -1,0 +1,513 @@
+---
+author: "Blain Morin + Jess Kaminsky"
+date: "November 6, 2017"
+output: html_document
+---
+# A Sentiment Analysis of Ted Talks
+
+###THE DATA:
+
+The data used in this analysis was found on Kaggle (https://www.kaggle.com/rounakbanik/ted-talks) and presented in two CSV files. The data was originally scraped from the official TED Website. 
+
+The context for the data, as provided on Kaggle is as follows:
+
+"These datasets contain information about all audio-video recordings of TED Talks uploaded to the official TED.com website until September 21st, 2017. The TED main dataset contains information about all talks including number of views, number of comments, descriptions, speakers and titles. The TED transcripts dataset contains the transcripts for all talks available on TED.com."
+
+In the following analysis, we are examining word choice and overall sentiment among Ted Talks with respect to other variables provided in the data.
+
+## Jess' Analysis
+One of the variables provided in the data set is 'ratings' which provides a list of various ratings given to the talks provided by the viewers. For each talk, each rating has a number associated with it which represents the number of votes each rating received. I have chosen to define the max rating of each talk as the rating that received the most votes. Before looking at sentiment and word choice in the talks, I will to look at the distribution of max ratings among all ted talks.
+
+```{r setup, include=FALSE, warning = FALSE, message = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r global_options , include=FALSE, warnings =FALSE, message=FALSE}
+```
+
+```{r, echo = FALSE, fig.width= 11}
+## take the transcript data, that contains a row for each word spoken, filter it to
+## be one row for each ted talk and its max rating
+rating_dist <- transcripts_clean %>%
+  distinct(name, max_rating) %>%
+  group_by(max_rating) %>%
+  count()
+
+ggplot(rating_dist, aes(reorder(max_rating, n), n, fill = max_rating)) +
+  geom_col(show.legend = FALSE) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  xlab("Max Rating") + 
+  ylab("Count") +
+  ggtitle("Distribution of Max Ratings given to all Ted Talks")
+
+```
+
+Before performing any sentiment analysis or looking at word choice, I want to look at the overall distribution of words used across all Ted Talks. In the plot below, we see that the word 'like' has approximately double the frequency of the next most common word. We know that this is a filler word that does not have a true sentiment or postive/negative connotation in colloquial English, therefore, we will exclude 'like' from further plots and analyses. We will also remove the word "right" as it is the 3rd most common word used in Ted Talks and it's sentiment is not obvious out of context - it could be a positive word meaning correct but it could also mean the direction which doesn't hold a true sentiment.
+
+```{r, echo = FALSE, fig.width=11}
+# take the transcript data generated using the bing lexicon, group by word in order 
+# to plot the distribution
+word_freq <- sentiments_bing %>%
+  group_by(word) %>%
+  count() %>%
+  ungroup() %>%
+  top_n(50, wt = n)
+
+ggplot(word_freq, aes(reorder(word,n), n, fill = 10)) + 
+  geom_col(show.legend = FALSE) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  ggtitle("Distribution of Top 50 Words used across all Ted Talks") + 
+  xlab("Word") + 
+  ylab("Frequency")
+```
+
+The distribution of the top 50 words used in ted talks after removing "like" + "right"
+
+```{r, echo = FALSE, fig.width=11}
+#remove rows that have word = like or right
+word_freq <- word_freq %>% filter(!word %in% c("like", "right"))
+
+ggplot(word_freq, aes(reorder(word,n), n, fill = 10)) + 
+  geom_col(show.legend = FALSE) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  ggtitle("Distribution of Top 50 Words used across all Ted Talks") + 
+  xlab("Word") + 
+  ylab("Frequency")
+```
+
+Next, I will use the nrc lexicon to look at the distribution of sentiments, as determined by word choice, among ted talks when grouped by their max rating. The frequency is presented as a proportion here because, as seen above, the number of talks within each max rating group is not uniform.
+
+When looking at the plots below, there does not appear to be any large differences in the distribution among ted talks based on their max rating.
+
+```{r, echo = FALSE, fig.width=11,fig.height=10}
+# take the transcript data generated using the nrc lexicon - remove words like and right and 
+# sentiments that are positive or negative
+# use to plot distribution of sentiments in ted talks by rating
+sentiment_plot <- sentiments_nrc %>%
+  filter(!word %in% c("like", "right")) %>%
+  filter(!sentiment %in% c("positive", "negative")) %>%
+  count(max_rating, sentiment) %>%
+  group_by(max_rating) %>%
+  mutate(sentiment_count = sum(n)) %>%
+  ungroup() %>%
+  mutate(prop = n/ sentiment_count)
+
+ggplot(sentiment_plot, aes(sentiment, prop, fill = max_rating)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~max_rating, scales = "free", labeller = ) +
+  coord_flip() + 
+  ylab("Frequency") + 
+  xlab("Sentiment") +
+  ggtitle("Distribution of Sentiments of Words used in Ted Talks by Rating")
+
+
+```
+
+
+To look more at what may have contributed to the max rating a Ted Talk received from its' viewers, I will look at the top ten words used in Ted Talks as grouped by max rating. Again the frequencies are presented as proportions to account for differences in sample size among groups.
+
+In the plots below, we see a lot of the most common words - from the word distribution plots above - represented in many or all of the max rating categories. 11 out of the 14 groups have the word "well" as their most frequenty used word. The words "work", "great", "good", "thank", and "problem" are other common words among all groups.
+
+Some interesting findings shown by these plots are as follows. "Fear" and "death" are among the top 10 words used in talks with a max rating of courageous. "Cancer" is one of the top ten words used in talks with a max rating of informative. Talks with an obnoxious max rating had the most interesting set of top ten words used - "risk", "complex", "virus", "unexpected", "injury", "died". OK talks also had a unique list of top ten words, including "award", "winner", and "cave".
+
+```{r, echo = FALSE, fig.width = 11,fig.height=11}
+#use bing lexicon data
+
+word_counts <- sentiments_bing %>%
+  count(max_rating, word) %>%
+  group_by(max_rating) %>%
+  mutate(rating_counts = sum(n)) %>%
+  ungroup() %>%
+  mutate(prop = n / rating_counts) 
+#take top ten words, after by sorting by descending frequency
+top <- word_counts %>%
+  arrange(desc(prop)) %>%
+  group_by(max_rating) %>%
+  slice(1:10) %>%
+  ungroup() 
+
+ggplot(top, aes(reorder(word, prop), prop, fill = max_rating)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~max_rating, scales = "free") +
+  coord_flip() + 
+  ylab("Frequency") +
+  xlab("Top Ten Words") + 
+  ggtitle("Top Ten Words used in Ted Talks by rating")
+
+```
+
+Instead of looking at the distribution of sentiments provided by the nrc lexicon, I will now use the bing lexicon to look at the distribution of positive versus negative Ted Talks are based on their max rating.
+
+Most of the talks appear to have a higher frequency of words that contribute to positive sentiment. The talks with max ratings "Courageous", "Obnoxious", and "OK" have more negative words than postive words. We will explore these talks further to see which words contribute to their sentiments in both the bing and nrc lexicons.
+```{r, echo = FALSE, fig.width=11}
+#bing lexicon, distribution of sentiment across max ratings
+pos_neg <- sentiments_bing %>%
+  count(max_rating, sentiment) %>%
+  group_by(max_rating) %>% 
+  mutate(sentiment_count = sum(n)) %>%
+  ungroup() %>%
+  mutate(prop = n / sentiment_count)
+  
+ggplot(pos_neg, aes(sentiment, prop, fill = max_rating)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~max_rating, scales = "free", labeller = ) +
+  coord_flip() + 
+  ggtitle("Frequency of Postive + Negative words used in Ted Talks by rating") + 
+  xlab("") + 
+  ylab("Frequency")
+
+#we will look further at Courageous, Obnoxious, and OK talks
+```
+
+
+For Ted Talks with a max rating of "Courageous", "Obnoxious", or "OK" I will present plots of the top 20 positive and negative words used in those talks.
+
+When the max rating is "Courageous" we see the top 20 negative words used are words that are associated with topics that are difficult to talk about - death, corruption, killed, lost, die, died, dead, pain, suicide, depression.
+
+```{r, echo = FALSE, fig.width = 11}
+#distribution of postive and negative words used in talks that were rated courageous
+sentiments_bing %>%
+    filter(max_rating %in% c("Courageous")) %>%
+    count(word, sentiment) %>%
+    group_by(sentiment) %>%
+    arrange(desc(n)) %>%
+    slice(1:20) %>%
+    ungroup() %>%
+    mutate(word = reorder(word, n)) %>%
+    ggplot(aes(x = word, y= n, fill = sentiment)) +
+    geom_col(show.legend = FALSE) +
+    ylab("count") +
+    facet_wrap(~ sentiment, scales = "free") +
+    coord_flip() +
+    ggtitle("Top 20 Words That Contributed to Postive + Negative Sentiment when Rating is Courageous")
+```
+
+
+When the max rating is "Obnoxious" - the words or topics that may contribute to the higher negative sentiment are not obvious. We see an interesting group of words in the top 20 most used negative words - virus, neurotic, weird, untouched, epidemic, blunt.
+
+```{r, echo = FALSE, fig.width = 11}
+#distribution of postive and negative words used in talks that were rated obnoxious
+sentiments_bing %>%
+    filter(max_rating %in% c("Obnoxious")) %>%
+    count(word, sentiment) %>%
+    group_by(sentiment) %>%
+    arrange(desc(n)) %>%
+    slice(1:20) %>%
+    ungroup() %>%
+    mutate(word = reorder(word, n)) %>%
+    ggplot(aes(x = word, y= n, fill = sentiment)) +
+    geom_col(show.legend = FALSE) +
+    ylab("count") +
+    facet_wrap(~ sentiment, scales = "free") +
+    coord_flip() +
+    ggtitle("Top 20 Words That Contributed to Postive + Negative Sentiment when Rating is Obnoxious")
+```
+
+When the max rating is "OK" we see an even less cohesive group of words that contribute to the negative sentiment. The top 20 negative words include - silly, limited, funky, dizzy, died, destruction, cheap, blind, and betray. These words do have a negative connotation but they are not obviously associated with things that are difficult to talk about as seen in the "Courageous" group. This mismatched group of negative words makes sense for a talk that was rated "OK". Nothing too negative or positive.
+
+```{r, echo = FALSE, fig.width = 11}
+#distribution of postive and negative words used in talks that were rated OK
+sentiments_bing %>%
+    filter(max_rating %in% c("OK")) %>%
+    count(word, sentiment) %>%
+    group_by(sentiment) %>%
+    arrange(desc(n)) %>%
+    slice(1:20) %>%
+    ungroup() %>%
+    mutate(word = reorder(word, n)) %>%
+    ggplot(aes(x = word, y= n, fill = sentiment)) +
+    geom_col(show.legend = FALSE) +
+    ylab("count") +
+    facet_wrap(~ sentiment, scales = "free") +
+    coord_flip() +
+    ggtitle("Top 20 Words That Contributed to Positive + Negative Sentiment when Rating is OK")
+```
+
+
+
+
+
+
+***
+
+
+
+
+
+
+## Blain's Analysis
+
+### Which talks had the highest proportion of positive words?
+
+
+```{r, echo=FALSE}
+### Change df name to avoid conflicts with Jess' work
+transcripts_bing = sentiments_bing
+transcripts_nrc = sentiments_nrc
+
+### Add a total word count for each transcript
+transcripts_clean = transcripts_clean %>%
+  group_by(name) %>%
+  mutate(wordcount = n()) %>%
+  ungroup()
+
+### Create a table which displays the top 20 positive talks
+top_table = transcripts_bing %>%
+  filter(sentiment == "positive") %>%
+  filter(wordcount > 510) %>%
+  count(name, sentiment, wordcount) %>%
+  mutate(positive_p = n / wordcount) %>%
+  select(-sentiment) %>%
+  arrange(desc(positive_p)) %>%
+  top_n(20, wt = positive_p)
+
+###kable function creates a nice markdown table
+kable(top_table, col.names = c("Name", "Word Count", "n", "p positive"), caption = "Most Positive Talks:")
+
+
+```
+
+
+To obtain this chart we filtered presentations that had fewer than 510 words. This filter was chosen to help remove some artistic performances, which we did not want to include in the analysis. However, we see that "John Legend: Redemption Song" still made it through. 
+
+Many of the talks featured in the above table are what we would expect. Most have a positive sentiment in their title (such as "The Hidden Power of Smiling"). Some talks were expected to be positive because of the speaker's position (for example, Michelle Obama makes it on the list).
+
+
+
+### Which words contributed the most often to sentiment scores?
+
+```{r, echo = FALSE}
+
+###Count by word and sentiment
+###Then, group by sentiment
+###Then, plot the top 20 words for each sentiment
+
+transcripts_bing %>%
+    count(word, sentiment) %>%
+    group_by(sentiment) %>%
+    top_n(20, wt = n) %>%
+    ungroup() %>%
+    mutate(word = reorder(word, n)) %>%
+    ggplot(aes(x = word, y= n, fill = sentiment)) +
+    geom_col(show.legend = FALSE) +
+    ylab("Count") +
+    xlab("Word") +
+    facet_wrap(~ sentiment, scales = "free") +
+    coord_flip() +
+    ggtitle("Top 20 Words That Contributed to Sentiment") +
+    scale_color_manual(values = c("cadetblue3", "coral2")) +
+    theme_minimal()
+
+```
+
+We can see from the chart above that the word "problem" contributed the most toward negative sentiment scores and that the word "well" contributed the most towards a positive score. It is interesting that the word "cancer" appears more times in the talks than "happy." However, this observation is not suprising when considering the problem solving nature of the TED conference. 
+
+
+
+###Did sentiment change over time?
+
+
+```{r, echo=FALSE, fig.height=7, fig.width=7}
+
+### Use lubridate to convert Unix time to a date
+### Then creaye a year column
+
+transcripts_bing = transcripts_bing %>%
+  mutate(year = year(as.Date(as.POSIXct(transcripts_bing$film_date, origin="1970-01-01"))))
+
+###Group by year and count the total sentiment words
+bing_by_year = transcripts_bing %>%
+  group_by(year) %>%
+  mutate(total_words = n()) %>%
+  ungroup() 
+
+### Want to add top tag per year
+### First extract tags
+### Then find top tag per year 
+
+tagsdata = bing_by_year %>%
+  distinct(title, tags, year)%>%
+  unnest_tokens(output = tag, input = tags) %>%
+  group_by(year, tag) %>%
+  count() %>%
+  ungroup() %>%
+  group_by(year) %>%
+  slice(which.max(n)) %>%
+  select(year, tag)
+
+### Join the top tags with the transcipt data
+bing_by_year = bing_by_year %>% inner_join(tagsdata, by = "year") %>% rename(yeartoptag = tag)
+
+
+### Create plot with time on x axis and proportion on the y axis
+### Color by positive / negative sentiment
+### Add top tag of the year as text at position y = .5
+bing_by_year %>%
+    count(year, sentiment, total_words, yeartoptag) %>%
+    mutate(p = n / total_words) %>%
+    ggplot(aes(x = year, y = p, color = sentiment)) +
+    geom_line(size = 1.5) +
+    geom_smooth(method = "lm", se = FALSE, lty = 3) +
+    xlab("Year") +
+    ylab("Proportion of Sentiment Words") +
+    ggtitle("Sentiment Through Time With Top Tag")+
+    geom_text(aes(x = year, y = .5, label = yeartoptag), angle = 90, color = "black", size = 4.5) + 
+    scale_color_manual(values = c("cadetblue3", "coral2")) +
+    theme_classic()
+```
+
+
+From the chart above, there does seem to be a trend of decreasing positivity in TED talks over time. Three out of four times, when culture is the top tag of the year, the proportion of sentiment words seems to sharply decrease. To investigate this further, we will look to see if there was a difference in sentiment between talks that had a "culture" tag and talks that had a "technology" tag. But first, let's take another look at the proportion of sentiment words using a ridge plot:
+
+
+
+```{r, echo = FALSE, fig.height=8, fig.width=7}
+
+### Count the number of positive and negative sentiment words in each talk, grouped by year
+transcripts_bing %>%
+  group_by(name, sentiment, year) %>%
+  filter(year > 1998) %>%
+  count() %>%
+### Tidy the data to that positive and negative counts are columns by using spread function 
+  spread(sentiment, n) %>%
+### Find positive and negative proportion for each talk  
+  mutate(total = negative + positive) %>%
+  mutate(Prop_Positive = positive / total) %>%
+  mutate(Prop_Negative = negative / total) %>%
+### Plot the density proportions separated by year using ggridges
+  ggplot(aes(x = Prop_Positive, y = as.factor(year))) + 
+  geom_density_ridges(aes(x = Prop_Negative, fill = "Negative"), alpha = .7, rel_min_height = .03, scale = 1, na.rm = TRUE)+
+  geom_density_ridges(aes(fill = "Positive"), alpha = .7, rel_min_height = .03, scale = 1, na.rm = TRUE) +
+  scale_fill_manual("", values = c("cadetblue3", "coral2")) +
+  theme_classic() +
+  ylab("Year") +
+  xlab("Proportion") +
+  ggtitle("Densities of  Sentiment Proportion by Time")
+
+```
+
+
+The ridge plot highlights that the proportion of sentiment words is usually higher on average than the proportion of negative words. However, this difference seems to be decreasing over time. The gray areas where the ridgelines overlap represent the number of talks where there was actually a higher proportion of negative words. 
+
+
+
+### Was there a difference in positive sentiment between talks that were tagged "culture" and talks that were tagged "technology"?
+
+
+```{r, echo = FALSE, fig.height=7, fig.width=8}
+
+### Filter the talks that have culture as a tag using stringr
+### Then create a count of the total number of sentiment words
+### Then filter the positive sentiment rows and remove wordcount outliers (makes graph look nicer)
+### Then create a column for the proportion of positive sentiment words
+culture_bing = transcripts_bing %>%
+  filter(str_detect(tags, pattern = "culture")) %>%
+  group_by(name) %>%
+  mutate(sentwords = n()) %>%
+  ungroup() %>%
+  filter(sentiment == "positive", wordcount < 6000) %>%
+  count(name, sentiment, sentwords, wordcount) %>%
+  mutate(positive_p = n / sentwords)
+
+###Repeat the above steps for talks that have a technology tag
+technology_bing = transcripts_bing %>%
+  filter(str_detect(tags, pattern = "technology")) %>%
+  group_by(name) %>%
+  mutate(sentwords = n()) %>%
+  ungroup() %>%
+  filter(sentiment == "positive", wordcount <6000) %>%
+  count(name, sentiment, sentwords, wordcount) %>%
+  mutate(positive_p = n / sentwords)
+
+###Plot points for both culture and technology dataframes
+###Add a linear smoothing line with 95% confidence bands
+ggplot(culture_bing, aes(x = wordcount, y = positive_p)) +
+  geom_point(data = culture_bing, color = "cadetblue3") + 
+  geom_point(data = technology_bing, color = "coral2", alpha = .6) +
+  geom_smooth(method = "lm", aes(color = "Culture Talks"), size = 2) +
+  geom_smooth(data = technology_bing, method = "lm", aes(color = "Technology Talks"), size = 2) +
+  scale_color_manual("", values = c("cadetblue3", "coral2")) +
+  xlab("Word Count") +
+  ylab("Positive Sentiment Proportion") +
+  ggtitle("Positive Sentiment: Culture vs Technology") +
+  theme_classic()
+
+
+```
+
+
+At 95% confidence, there does not seem to be a difference in the proportion of positive sentiment words between culture talks and technology talks. Word count on the X axis would not always be a valid way to compare these proportions, but in this case there is a similar inverse trend. We can also look at the difference in mean positive sentiment word proportion:
+
+
+
+```{r, echo=FALSE}
+
+### Find mean proportion for all culture talks
+culturesum = culture_bing %>%
+  summarise(average_positive = mean(positive_p))
+
+### Find mean proportion for all tech talks
+techsum =  technology_bing %>%
+  summarise(average_positive = mean(positive_p))
+
+### Save the means for use in table 
+cultureval = culturesum[[1]]
+techval = techsum[[1]]
+
+###Create table which displays the means
+kable(tibble(cultureval, techval), col.names = c("Culture", "Technology"))
+```
+
+
+So, the overall difference between positive sentiment word proportion between the two tags is less than 3%.
+
+
+
+### Was there a difference in the trend of positive sentiments between culture and technology talks?
+
+
+
+```{r, echo = FALSE, fig.height=7, fig.width=7}
+
+### First filter for all talks containing culture tag
+### Then count the number of sentiment words in each talk
+### Then filter for positive sentiment and year > 2000 (for nicer graph)
+### Add a column for the proportion of positive sentiment words
+culture_bing_year = bing_by_year %>%
+  filter(str_detect(tags, pattern = "culture")) %>%
+  group_by(name) %>%
+  mutate(sentwords = n()) %>%
+  ungroup() %>%
+  filter(sentiment == "positive", year > 2000) %>%
+  count(name, sentiment, wordcount, sentwords, year) %>%
+  mutate(positive_p = n / sentwords)
+
+### Follow the steps above for talks containing a technology tag
+technology_bing_year = bing_by_year %>%
+  filter(str_detect(tags, pattern = "technology")) %>%
+  group_by(name) %>%
+  mutate(sentwords = n()) %>%
+  ungroup() %>%
+  filter(sentiment == "positive", year >2000) %>%
+  count(name, sentiment, wordcount, sentwords, year) %>%
+  mutate(positive_p = n / sentwords)
+
+### Plot y = Positive proportion, x = year
+### Add points for each talk, colored by tag
+### Add a linear smoothing line, colored by tag
+ggplot(culture_bing_year, aes(x = year, y = positive_p)) +
+  geom_point(data = culture_bing_year, color = "cadetblue3", alpha = .9) + 
+  geom_point(data = technology_bing_year, color = "coral2", alpha = .2) +
+  geom_smooth(method = "lm", se = FALSE, aes(color = "Culture Talks"), size = 2) +
+  geom_smooth(data = technology_bing_year, method = "lm", se = FALSE, aes(color = "Technology Talks"), size = 2) +
+  scale_color_manual("", values = c("cadetblue3", "coral2")) +
+  xlab("Year") +
+  ylab("Positive Sentiment Proportion") +
+  ggtitle("Positive Sentiment: Culture vs Technology") +
+  theme_classic()
+
+
+```
+
+
+There appears to be a difference in trends between culture talks and techonolgy talks: culture talks seems to have decreased in positivity whereas positivity in the technology talks has remained relatively constant. 

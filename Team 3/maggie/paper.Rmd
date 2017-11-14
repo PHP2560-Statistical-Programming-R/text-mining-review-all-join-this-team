@@ -1,0 +1,48 @@
+---
+title: "Harry Potter Text Analysis"
+author: "Maggie Matsui"
+output: html_document
+---
+
+### The Data
+The data were obtained from [this package](https://github.com/bradleyboehmke/harrypotter).
+
+The book analyzed in this document is:
+```
+book_title <- "deathly_hallows"
+```
+
+### How does sentiment change throughout the book?
+
+Different words can have positive or negative sentiment, and words can have different magnitudes of positive or negative sentiment. For each chapter of the book, we can calculate the overall sentiment score, where a negative score indicates an overall negative sentiment, and a positive score indicates an overall positive sentiment. Below is a plot showing how overall sentiment changes throughout the book:
+
+![*Fig. 1* Sentiment Throughout Book](plots/sentiment_over_time.png)
+
+### What words are used most commonly in the book?
+
+Below is a plot that shows the most common words used in the book, excluding meaningless words (stop words).
+
+![*Fig. 2* Most Common Words](plots/most_common_words.png)
+
+### How does anticipation change throughout the book?
+
+Certain words are associated with specific emotions. Here, we look at how many anticipatory words appear throughout the book. 
+
+![*Fig. 3* Anticipation Throughout Book](plots/anticipation.png)
+
+### How does word count change by chapter?
+
+Below is a plot showing the number of words that comprise each chapter in the book.
+
+![*Fig. 4* Word Count By Chapter](plots/word_count.png)
+
+### What characters appear most frequently in the book? 
+Here, we can see a table of the characters that appear most frequently in the book:
+
+![*Fig. 5* Most Common Characters](plots/characters.png)
+
+### How do character relationships change throughout the series?
+
+Certain pairs, like Harry & Ron, are mentioned at different frequencies throughout the entire series. This data could tell us about the nature of characters' relationships as the story goes on. Below is a plot that shows how frequently certain character pairs are mentioned throughout the series.
+
+![*Fig. 6* Word Count By Chapter](plots/char_pairs.png)

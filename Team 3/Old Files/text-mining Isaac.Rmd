@@ -1,0 +1,199 @@
+---
+title: "Text Analyis"
+output: github_document
+---
+
+
+
+
+# Your mission
+
+Perform text analysis.
+
+## Okay, I need more information
+
+Perform sentiment analysis or topic modeling using text analysis methods as demonstrated in the pre-class work and in the readings.
+
+## Okay, I need even more information.
+
+Do the above. Can't think of a data source?
+
+- `gutenbergr`
+- `AssociatedPress` from the `topicmodels` package
+- `NYTimes` or `USCongress` from the `RTextTools` package
+- Harry Potter Complete 7 Books text
+    ```
+    if (packageVersion("devtools") < 1.6) {
+  install.packages("devtools")
+}
+
+devtools::install_github("bradleyboehmke/harrypotter")
+    ```
+- [State of the Union speeches](https://pradeepadhokshaja.wordpress.com/2017/03/31/scraping-the-web-for-presdential-inaugural-addresses-using-rvest/)
+- Scrape tweets using [`twitteR`](https://www.credera.com/blog/business-intelligence/twitter-analytics-using-r-part-1-extract-tweets/)
+
+Analyze the text for sentiment OR topic. **You do not need to do both**. The datacamp courses and [Tidy Text Mining with R](http://tidytextmining.com/) are good starting points for templates to perform this type of analysis, but feel free to *expand beyond these examples*.
+
+# Timelines and Task
+
+
+We will spend the next 2 weeks working on analyzing textual data in R. You will do the following:
+
+- Start with some text based data.
+- Clean data and prepare it for analysis
+- Ask questions about the data
+- Answer these questions with the data using tables and graphics
+- Each group member must have their own unique question that they code the answer for. 
+
+```{r}
+  install.packages("devtools")
+devtools::install_github("bradleyboehmke/harrypotter")
+library("harrypotter")
+library("tidyverse")
+library("stringr")
+library("rebus")
+library("tidytext")
+
+# create vector of book names
+book_names <- list(philosophers_stone, chamber_of_secrets, prisoner_of_azkaban, goblet_of_fire, order_of_the_phoenix, half_blood_prince, deathly_hallows)
+names(book_names) <- c("philosophers_stone", "chamber_of_secrets", "prisoner_of_azkaban", "goblet_of_fire", "order_of_the_phoenix", "half_blood_prince", "deathly_hallows")
+
+# clean data
+books = vector(mode = "list", length = 7)
+for(i in 1:length(books)){
+  # convert text to dataframe
+  data <- data_frame(text = book_names[[i]])
+  # add column for chapter numbers and title of book
+  data <- mutate(data, chapter = c(1:nrow(data)), title = names(book_names)[i])
+  # split by word and remove punctuation
+  data <- data %>%
+    unnest_tokens(word, text, to_lower = TRUE)
+  # store clean data to list
+  books[[i]] <- data
+}
+
+# make one data frame from list of data frames
+books <- plyr::ldply(books, data.frame)
+
+
+```
+# Question 1 How the sentiment changes across the entire book
+```{r}
+POA <- filter(books,title=="prisoner_of_azkaban") %>%
+inner_join(get_sentiments("bing")) %>%
+group_by(chapter,sentiment) %>%
+dplyr::summarize(count=n())
+
+ggplot(POA,aes(x=chapter,y=count,color=sentiment))+
+  geom_path() +
+  ggtitle("Sentiment Type Per Chapter in Prisoner of Azkaban")+
+    scale_color_brewer(palette='Set1')+
+  geom_smooth(se=FALSE,linetype = "dashed")
+```
+
+
+# Question 2 What are the most common words by chapter
+```{r}
+common_words<-books%>%
+  filter(title =="prisoner_of_azkaban")%>%
+  filter(!(word %in% c("He","I","The"))) %>%
+  anti_join(stop_words)%>%
+  group_by(chapter)%>%
+  dplyr::count(word, sort=TRUE)%>%
+  top_n(5)%>%
+  arrange(chapter)
+common_words
+```
+
+
+#Question 3 Which characters appear the most 
+```{r}
+# clean data
+books = vector(mode = "list", length = 7)
+for(i in 1:length(books)){
+  # convert text to dataframe
+  data <- data_frame(text = book_names[[i]])
+  # add column for chapter numbers and title of book
+  data <- mutate(data, chapter = c(1:nrow(data)), title = names(book_names)[i])
+  # split by word and remove punctuation
+  data <- data %>%
+  # include upper case words  
+    unnest_tokens(word, text, to_lower = FALSE)
+  # store clean data to list
+  books[[i]] <- data
+}
+
+# make one data frame from list of data frames
+books <- plyr::ldply(books, data.frame)
+
+
+
+
+
+POA <- filter(books,title=="prisoner_of_azkaban") %>%
+select(word) %>% 
+# regular expression for character names
+filter(str_detect(word, UPPER %R% ANY_CHAR %R% ANY_CHAR %R% ANY_CHAR)) %>%  
+# remove words that aren't character names
+filter(!(word %in% c("The","They","What","There","It's","Then"))) %>%
+filter(word != "Harry's", word != "Professor", word != "Gryffindor") %>%
+# get frequency for most popular character names
+group_by(word) %>%
+dplyr::summarize(count=n()) %>%
+arrange(desc(count))
+
+
+# Plotting for top 9 names
+ggplot(POA[1:9, ],aes(x=reorder(word,count),y=count)) + 
+  geom_col(fill="cyan",color="blue") +
+  xlab("Characters") +
+  ggtitle("Most Popular Characters in Prisoner of Azkaban") +
+# Put frequency labels next to bars  
+  geom_text(aes(label = paste0(count)), nudge_y = 1) +
+  coord_flip()
+```
+
+#Question 4 How the emotion anticipation changes throughtout the book
+```{r}
+total_words =
+books %>%
+  filter(title=="prisoner_of_azkaban") %>%
+  inner_join(get_sentiments("nrc"))%>%
+  group_by(chapter,sentiment) %>%
+  dplyr::count(word) %>%
+  dplyr::summarize(word_occurence=sum(n))%>%
+mutate(total_words=sum(word_occurence)) %>%
+
+  filter(sentiment=="anticipation") %>%
+  mutate(proportion= word_occurence/total_words) 
+
+
+ggplot(total_words,aes(x=chapter,y=proportion))+
+  ggtitle("Anticipation Throughout Prisoner of Azkaban") +
+  geom_line(color="deeppink")
+```
+
+
+#Question 5 Word count for each book
+```{r}
+filter(books,title=="prisoner_of_azkaban") %>%
+select(word) %>% 
+dplyr::summarize(total_words=n())
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```

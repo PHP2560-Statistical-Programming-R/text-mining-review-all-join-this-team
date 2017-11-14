@@ -1,0 +1,261 @@
+---
+title:  |  
+   <center> <h1>Sentiment Analysis of Donald Trump’s Twitter</h1> </center>
+   <center> <h2>A Brief Study Using NRC Lexicon</h2> </center>
+author: <center> <h3>Ozan Adiguzel</h3> </center>
+date: <center> <h3>November 7, 2017</h3> </center>
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE, message=FALSE, include=FALSE}
+names <- c(
+            "dplyr", 
+            "stringr", 
+            "rebus", 
+            "lubridate", 
+            "ggplot2", 
+            "tidytext", 
+            "wordcloud"
+           )
+
+for(name in names) {
+  if (!(name %in% installed.packages()))
+    install.packages(name, repos="http://cran.us.r-project.org")
+  library(name, character.only=TRUE)
+}
+
+# export the data manually from "http://www.trumptwitterarchive.com/archive" and save as a csv file
+
+# read the csv file 
+DT_all_tweets <- read.csv("data/Donald_Trump_twitter.csv")
+
+# get the date and the time of the most recent tweet
+most_recent_tweet <- DT_all_tweets[1, 3]
+
+# print the date and the time of the most recent tweet
+paste0("The date and the time of the most recent tweet: ", most_recent_tweet)
+
+date_and_time <- DT_all_tweets$created_at %>%
+  str_split(pattern = " ", simplify = TRUE) %>%
+  as_tibble() %>%
+  rename(date = V1, time = V2) %>%
+  mutate(date = as.Date(date, "%m/%d/%y"))
+
+date <- date_and_time$date %>%
+  str_match(
+    pattern = capture(one_or_more(DGT)) %R% 
+      "-" %R% capture(one_or_more(DGT)) %R% 
+      "-" %R% capture(one_or_more(DGT))
+          ) %>%
+  as_tibble() %>%
+  rename(date = V1, year = V2, month = V3, day = V4)
+
+clean_data <- DT_all_tweets %>%
+  cbind(date) %>%
+  filter(is_retweet == "FALSE") %>%
+  select(text, date, year, month, day) 
+
+
+clean_data$text <- as.character(clean_data$text)
+
+tidy_words <- clean_data %>%
+  as.tbl() %>%
+  unnest_tokens(word, text) %>%
+  filter(!(word %in% c( 
+                     "t.co", 
+                     "http", 
+                     "https", 
+                     "amp",
+                     "twitter",
+                     "android",
+                     "web",
+                     "client",
+                     "realdonaldtrump"
+                     )))
+
+word_counts_all <- tidy_words %>%
+  # Implement sentiment analysis using the "nrc" lexicon
+  inner_join(get_sentiments("nrc")) %>%
+  # Count by word and sentiment
+  count(word, sentiment) %>%
+  # Group by sentiment
+  group_by(sentiment)
+
+word_counts_pos_neg <- tidy_words %>%
+  # Implement sentiment analysis using the "nrc" lexicon
+  inner_join(get_sentiments("nrc")) %>%
+  filter(sentiment %in% c("positive", "negative")) %>%
+  # Count by word and sentiment
+  count(word, sentiment)
+
+sentiment_by_time <- tidy_words %>%
+  # Define a new column using floor_date()
+  mutate(time = floor_date(as_datetime(date), unit = "6 months")) %>%
+  # Group by date
+  group_by(time) %>%
+  mutate(total_words = n()) %>%
+  ungroup() %>%
+  # Implement sentiment analysis using the NRC lexicon
+  inner_join(get_sentiments("nrc"))
+```
+<br><br>
+
+## Background
+
+Donald Trump, arguably America’s most controversial president, is the most-followed world leader on Twitter today, with more than 42 million followers. His unorthodox use of social media often results in headliner tweets that have sparked debate. Trump has shared his stance on the issue, once again turning to his preferred method of communication to post the following: “My use of social media is not Presidential- it’s MODERN DAY PRESIDENTIAL. ...” 
+
+Regardless, the twitter account of the 45th President of the United States is a unique source of information. This study is a brief sentiment analysis of Trump’s tweets.
+<br><br>
+
+## Data
+
+The Twitter data is downloaded manually from **Trump Twitter Archive:** http://www.trumptwitterarchive.com/archive
+
+The date and the time of the most recent tweet that is included in this study: `r most_recent_tweet`
+<br><br>
+
+## Method
+
+The Twitter data is cleaned and manipulated to extract every word with its corresponding timestamp.
+
+The sentiment analysis is conducted in R using the "NRC Word-Emotion Association Lexicon".
+<br><br>
+
+## Results
+
+* The ten most frequently-used words:
+
+```{r, echo=FALSE, message=FALSE, fig.align='center'}
+tidy_words %>% 
+  anti_join(stop_words) %>%
+  count(word, sort = T) %>%
+  mutate(word = reorder(word, n)) %>%
+  top_n(10) %>%
+  ggplot(aes(word, n, fill = n)) +
+    geom_col() +
+    xlab(NULL) +
+    coord_flip() +
+    ggtitle("Top 10 overall") +
+    theme(plot.title = element_text(hjust = 0.5))
+```  
+<br>
+
+* The wordclouds corresponding to the last four years, where every word is weighted based on frequency:
+
+```{r, echo=FALSE, message=FALSE, fig.align='center'}
+par(mfrow = c(2,2))
+
+tidy_words %>% 
+  anti_join(stop_words) %>% 
+  filter(year == 2017)  %>%
+  count(word, sort = T) %>%
+  mutate(word = reorder(word, n)) %>%
+  with(wordcloud(word, scale = c(1.5, .2), n, max.words = 100, random.order = F, random.color = F, colors = brewer.pal(8, "Dark2")))
+text(x=0.5, y= 0, "2017")
+
+tidy_words %>% 
+  anti_join(stop_words) %>% 
+  filter(year == 2016)  %>%
+  count(word, sort = T) %>%
+  mutate(word = reorder(word, n)) %>%
+  with(wordcloud(word, scale = c(1.5, .2), n, max.words = 100, random.order = F, random.color = F, colors = brewer.pal(8, "Dark2"), main = "P"))
+text(x=0.5, y=0, "2016")
+
+tidy_words %>% 
+  anti_join(stop_words) %>% 
+  filter(year == 2015)  %>%
+  count(word, sort = T) %>%
+  mutate(word = reorder(word, n)) %>%
+  with(wordcloud(word, scale = c(1.5, .2), n, max.words = 100, random.order = F, random.color = F, colors = brewer.pal(8, "Dark2")))
+text(x=0.5, y=0.2, "2015")
+
+tidy_words %>% 
+  anti_join(stop_words) %>% 
+  filter(year == 2014)  %>%
+  count(word, sort = T) %>%
+  mutate(word = reorder(word, n)) %>%
+  with(wordcloud(word, scale = c(1.5, .2), n, max.words = 100, random.order = F, random.color = F, colors = brewer.pal(8, "Dark2")))
+text(x=0.5, y=0.2, "2014")
+```  
+<br>
+
+* The five most frequently-used words for each sentiment and emotion:
+
+```{r, echo=FALSE, message=FALSE, fig.align='center'}
+word_counts_all %>%
+  # Take the top 5 words for each sentiment
+  top_n(5) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  # Set up the plot with aes()
+  ggplot(aes(word, n, mapping = sentiment)) +
+  geom_col(show.legend = FALSE, width = 0.5) +
+  facet_wrap(~ sentiment, scales = "free", nrow = 5) +
+  coord_flip() +
+  ggtitle("Top 5 words for each sentiment and emotion") +
+  theme(plot.title = element_text(hjust = 0.5))
+```  
+<br>
+
+* The ten most frequently-used positive and negative words:
+
+```{r, echo=FALSE, message=FALSE, fig.align='center'}
+word_counts_pos_neg %>%
+  # Group by sentiment
+  group_by(sentiment) %>%
+  # Take the top 10 for each sentiment
+  top_n(10) %>%
+  ungroup() %>%
+  # Make word a factor in order of n
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  # Make a bar chart with geom_col()
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, scales = "free") +  
+  coord_flip() +
+  ggtitle("Top 10 positive & negative words") +
+  theme(plot.title = element_text(hjust = 0.5))
+```  
+<br>
+
+* The positive and negative sentiment changes per six months over time:
+
+```{r, echo=FALSE, message=FALSE, fig.align='center'}
+sentiment_by_time %>%
+  # Filter for positive and negative words
+  filter(sentiment %in% c("positive", "negative")) %>%
+  # Count by date, sentiment, and total_words
+  count(time, sentiment, total_words) %>%
+  ungroup() %>%
+  mutate(percent = n / total_words) %>%
+  # Set up the plot with aes()
+  ggplot(aes(time, percent, mapping = sentiment)) +
+  geom_line(aes(colour = sentiment, group = sentiment), size = 1) +
+  geom_smooth(method = "lm", se = FALSE, lty = 2) +
+  expand_limits(y = 0) +
+  ggtitle("Sentiment change over time") +
+  theme(plot.title = element_text(hjust = 0.5))
+```  
+<br><br>
+
+## Limitations and Further Research
+
+* Some limitations of this study:
+
+    + The data cannot be downloaded directly from the website, making it difficult to create and update the dataset automatically. The task of cleaning the data and extracting the words is complicated by the fact that the Tweet texts appear with extra source information. A better source of data could facilitate the process and allow for a more reproducible analysis.
+    + Trump's tweets frequently feature misspellings. As a result, some words do not find their counterparts in the lexicon. 
+    + It was a challenge to decide whether or not to filter out the hashtags or references of Twitter accounts. For this analysis, I chose to only filter out Trump's personal account, @realDonaldTrump.  
+<br>
+
+* Further research may include:
+
+    + analysis of Trump's interaction with other Twitter users
+    + sentiment analysis to gauge his reaction to events as they unfold
+    + speech pattern assessment and predicton of future tweets
+
+<br><br>
+

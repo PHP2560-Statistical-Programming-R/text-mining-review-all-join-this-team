@@ -1,0 +1,31 @@
+---
+title: "Sentiment Analysis of Ted Talks"
+author: "Blain Morin"
+date: "November 8, 2017"
+output: html_document
+---
+
+## Background
+
+TED Talks is a popular conference that coveres a broad range scientific, cultural, and academic topics. According to wikipedia, TED Talks lectures (which are free to watch online), have been streamed over a billion times. 
+
+Using data obtained from kaggle.com (https://www.kaggle.com/rounakbanik/ted-talks), we can use the tidytext R package to perform sentiment analysis on the TED Talk transcripts. The data also contain 17 other variables such as time filmed, tags, ratings, and user views. 
+
+### Question 1: Which talks had the highest proportion of positive words?
+
+
+```{r}
+transcripts_bing = sentiments_bing
+transcripts_nrc = sentiments_nrc
+
+transcripts_bing %>%
+  filter(sentiment == "positive") %>%
+  filter(wordcount > 510) %>%
+  count(name, sentiment, wordcount) %>%
+  mutate(positive_p = n / wordcount) %>%
+  arrange(desc(positive_p)) %>%
+  top_n(20)
+
+
+```
+Talk about finding a cutoff for wordcount.
