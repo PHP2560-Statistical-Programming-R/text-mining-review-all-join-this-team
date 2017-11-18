@@ -49,7 +49,7 @@ tidy_stone2<-tidy_stone2%>%inner_join(get_sentiments("bing"))%>%
 ##Caculate the percentage of each word.
 stone_word<-stone_df%>%count(word,sort=T)%>%ungroup()
 stone_word<-stone_word%>%mutate(total=sum(n))
-stone_word<-ggplot(stone_word,aes(n/total))+geom_histogram(show.legend=F,fill="hotpink",color="black")+xlim(NA,0.0009)
+stone_word2<-ggplot(stone_word,aes(n/total))+geom_histogram(show.legend=F,fill="hotpink",color="black")+xlim(NA,0.0009)
 
 #Question6: What is the relationship between the rank and frequency?
 freq_by_rank<-stone_word%>%mutate(rank=row_number(),freq=n/total)

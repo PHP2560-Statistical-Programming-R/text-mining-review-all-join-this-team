@@ -60,7 +60,7 @@ tidy_stone2
 ```
 5. Can you draw a picture of the percentage of the word?
 ```{r}
-stone_word
+stone_word2
 ```
 6. What is the relationship between the rank and frequency?
 ```{r}
