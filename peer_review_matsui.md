@@ -22,12 +22,18 @@ The code isn't commented, making it difficult to read. Additionally, a lot of th
 
 # Team 4
 
-Comments are good but could be more evenly distributed throughout different lines of the code instead of just at the beginning of chunks.
+The comments are good but could be more evenly distributed throughout different lines of the code instead of just at the beginning of chunks.
 
 The code ran well on my computer, but it took me awhile to figure out that the analysis code was in the Rmd. One downside of putting the code into the Rmd is that it takes much longer to knit and the code within the Rmd can't be separated into different files like it could if it was in an R script. 
 
-Plots are well labeled and answer the questions being asked. One of the table's headers aren't labelled well, but most of the headings make sense.
+The plots are well labeled and answer the questions being asked. One of the table's headers aren't labelled well, but most of the headings make sense.
 
 One thing that I'm still confused about is what exactly is meant by the maximum rating of a Ted Talk and why it's a word instead of a number.
 
 # Team 5
+
+The code ran smoothly on my computer and made sense. 
+
+The code is commented, but the comments are sometimes too sparse for me to understand what is happening, but I'm able to get a general understanding. 
+
+The plots are well-labelled and answer the questions being asked. However, many of the tables displayed could benefit from using `kagle` instead of just being displayed in raw R output form and the headers could be renamed to make sense to outside readers. Additionally, I'm not sure if spitting out model summaries from R is the best way of showing them to people. There could be some nice looking tables or visualizations that could be made instead, especially when a more general audience is interested in the results rather than someone who knows more about statistics. 
