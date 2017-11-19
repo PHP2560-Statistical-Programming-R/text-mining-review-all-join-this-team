@@ -20,4 +20,14 @@ None of the graphs were available in the folder on GitHub, so I wasn't able to s
 
 The code isn't commented, making it difficult to read. Additionally, a lot of the code in `04_get_sentiment.R` is repetitive and could be condensed.
 
-# Team 3
+# Team 4
+
+Comments are good but could be more evenly distributed throughout different lines of the code instead of just at the beginning of chunks.
+
+The code ran well on my computer, but it took me awhile to figure out that the analysis code was in the Rmd. One downside of putting the code into the Rmd is that it takes much longer to knit and the code within the Rmd can't be separated into different files like it could if it was in an R script. 
+
+Plots are well labeled and answer the questions being asked. One of the table's headers aren't labelled well, but most of the headings make sense.
+
+One thing that I'm still confused about is what exactly is meant by the maximum rating of a Ted Talk and why it's a word instead of a number.
+
+# Team 5
