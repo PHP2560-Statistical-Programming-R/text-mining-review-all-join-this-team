@@ -11,3 +11,13 @@ The table in the project could benefit from better labels at the top so that the
 Questions are answered well using the tools learned in the course.
 
 `makefile.R` ran for me, but only after I fixed the issue in the `check_packages()` function.
+
+# Team 2
+
+Code did not run for me. There was a typo in the `check_packages()` function that caused the function to get imported as `heck_packages()`. Additionally, errors arose when the data created in `04_get_sentiment.R` was trying to be saved in line 60 because there was something not accounted for when the data was initially created.
+
+None of the graphs were available in the folder on GitHub, so I wasn't able to see what the plots would have looked like if the code was able to run. 
+
+The code isn't commented, making it difficult to read. Additionally, a lot of the code in `04_get_sentiment.R` is repetitive and could be condensed.
+
+# Team 3
