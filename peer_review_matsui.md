@@ -37,3 +37,15 @@ The code ran smoothly on my computer and made sense.
 The code is commented, but the comments are sometimes too sparse for me to understand what is happening, but I'm able to get a general understanding. 
 
 The plots are well-labelled and answer the questions being asked. However, many of the tables displayed could benefit from using `kagle` instead of just being displayed in raw R output form and the headers could be renamed to make sense to outside readers. Additionally, I'm not sure if spitting out model summaries from R is the best way of showing them to people. There could be some nice looking tables or visualizations that could be made instead, especially when a more general audience is interested in the results rather than someone who knows more about statistics. 
+
+# Team 6
+
+I'm not sure where exactly to find the `makefile.R`, but I found one in the folder called 'Lisha', so the feedback is based off of this folder. In the makefile, the path names are not correct, so it doesn't run. The code is commented well, has good style, and I understand what's happening, but I don't know where to find the other questions. Also, I would have removed the word 'tsingtao' from the word count, since that's the account that's being used and doesn't really tell us anything.
+
+The plot and table are both labelled well so I can understand what they represent without additional explanation needed. 
+
+You do a good job with breaking up the project into different parts in a logical manner, making it easier to understand the process.
+
+# General
+
+In all teams, the `check_packages()` function doesn't have brackets in the if statement, forcing my computer to reinstall packages that I already have. 
