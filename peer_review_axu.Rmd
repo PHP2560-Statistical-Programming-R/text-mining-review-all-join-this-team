@@ -1,0 +1,128 @@
+---
+title: "peer_review_Xu"
+author: "Anna Xu"
+date: "November 18, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+*** 
+# Team 1
+*** 
+Overall, this team did the job well though there are some parts that can be improved (see below for specific parts). 
+
+##Coding Style
+`+ For each file, the code is clear in what it does and is well commented.
+
+##Coding Strategy
+`+ The code is simple, clean and efficient in what it does. It also uses appropriate data structures. 
+
+##Presentation: graphs
+`+ The graphs look nice! 
+
+##Presentation: tables
+0 The tables do their job in showing how the data looks like to the coder, but in the actual paper, it can look less clean.
+
+##Achievement, mastery, cleverness, creativity
+0 The work done is interesting, though it'd be nicer if the code was not shown in the final paper as not showing the code would make the paper easier to follow. 
+
+##Ease of access for instructor, compliance with course conventions for submitted work
+0 The files are navigatable, but it could be improved by making one makefile for all the RMD files. That way, it's clearer what files were used for which paper and where each paper is located. 
+
+# Team 2
+*** 
+
+Overall, the presentation from this team looks great and the code is easy to understand. 
+
+##Coding Style
+`+ The coding style is simple, clean and easy to understand. 
+
+##Coding Strategy
+0 There were probably more efficient ways of getting sentiments (e.g., using tidyr), but otherwise, the code did its job. Getting books and cleaning them looks good. 
+
+##Presentation: graphs
+`+ Beautiful graphs!
+
+##Presentation: tables
+`+ Tables are beautiful though if they were less spaced out, it'd be neater. Otherwise, great job.
+
+##Achievement, mastery, cleverness, creativity
+`+ The project was interesting and the work was great!
+
+##Ease of access for instructor, compliance with course conventions for submitted work
+0 Very clean and easy to see what each file is for and how to get each file, though it'd be nicer if everything is in one makefile so that we could see overall where everything is.
+
+# Team 3
+*** 
+
+This team did a great job in organizing their files and presenting their material though see comments below. 
+
+##Coding Style
+`+ The coding style for the most part is easy to follow and well-commented.
+
+##Coding Strategy
+`+ The coding strategy is efficient and does the job well for the questions asked. 
+
+##Presentation: graphs
+0 The graphs at some points seem to have different resolution problems (it could have to do with the size of them). Otherwise, they're beautiful and answer the questions posed. 
+
+##Presentation: tables
+0 The tables are great though it'd be nice if they could be less spaced out. 
+
+##Achievement, mastery, cleverness, creativity
+`+ The project had good questions and answered them well with the code and the graphs. 
+
+##Ease of access for instructor, compliance with course conventions for submitted work
+`+ It was easy to see where each file was for each person. 
+
+# Team 4
+*** 
+
+Overall this team did well. This team had interesting questions and nice graphs to go along with them. The files are also well-organized. See comments below. 
+
+##Coding Style
+0 The code does its job and is well-commented. There are probably cleaner ways of writing some parts, but otherwise, it is clear in what it is doing. 
+
+##Coding Strategy
+0 The code does its job but there are probably more efficient ways of gathering the data without using for loops, especially with tidyr. 
+
+##Presentation: graphs
+`+ The graphs are interesting and display the information in a creative manner. 
+
+##Presentation: tables
+0 It'd be cleaner if the code and data wasn't outputted. Otherwise, the data presentation does its job. 
+
+##Achievement, mastery, cleverness, creativity
+`+ The work, overall, is excellent, creative, and goes beyond what is expected. The questions are very interesting and they are answered well by the graphs presented. 
+
+##Ease of access for instructor, compliance with course conventions for submitted work
+`+ It is very easy to navigate through the files and see where each thing is. Some parts could probably be combined into one file (e.g., analyses about the questions), but otherwise, it does its job well. 
+
+# Team 5
+*** 
+I'm in team 5 so skipping this one. 
+
+# Team 6
+*** 
+
+This team had interesting topics though more could have been done to take it to the next level with graphs and analyses. See below. 
+
+##Coding Style
+`+ The code is clean and simple and well-commented. 
+
+##Coding Strategy
+`+ The code does the job well and makes sense to use.
+
+##Presentation: graphs
+0 The graph looks nice but more color and boldness would make it clearer to see. 
+
+##Presentation: tables
+0 The table looks nice though the spacing makes it less clean.
+
+##Achievement, mastery, cleverness, creativity
+0 The data scraping was interesting though more could have probably been done in analyzing the words (e.g., asking different questions besides just frequency).
+
+##Ease of access for instructor, compliance with course conventions for submitted work
+0 The file organization is a bit messy, but I can find the main files that are needed. It'd be helfpul if files were named or if they were put in folders that mentioned what they were for. 
