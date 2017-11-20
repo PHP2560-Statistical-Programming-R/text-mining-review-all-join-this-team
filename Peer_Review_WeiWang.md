@@ -56,11 +56,13 @@ A few more comments and lables for graphs could be added to make our life much e
 Comments for Team 6
 ===================
     ##                                 Team 6
-    ## Coding Style                       NA 
-    ## Coding Strategy                    NA 
-    ## Presentation of Graphs             NA 
-    ## Presentation of Tables             NA 
-    ## Achievement/Mastery/Creativity     NA 
-    ## Ease of Access                     NA    
-NA (Has anyone deleted this file?)
+    ## Coding Style                       0 
+    ## Coding Strategy                    - 
+    ## Presentation of Graphs             0 
+    ## Presentation of Tables             0 
+    ## Achievement/Mastery/Creativity     0 
+    ## Ease of Access                     +    
+The updated code could run on my computer. However, more comments could be added to the code for easier understanding.
+It would be more helpful to make smoe seperate R files to explain each question or topic.
+A few more comments and lables for graphs could be added to make our life much easier.
 
