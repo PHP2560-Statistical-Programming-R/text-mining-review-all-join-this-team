@@ -7,9 +7,9 @@ Topic| team 2 | team 3 | team 4| team 5 |team 6|
 |Achievement, mastery, cleverness, creativity| + | 0 | + | 0 |No file|
 |Ease of access for instructor, compliance with course conventions for submitted work| + | 0 | 0 | - |No file|
 
-#Team 2
+###Team 2
 
-##Sadia
+###Sadia
 ### 1.Coding style
 Codes were properly commented. But the comments could be more specific;
 ### 2.Coding strategy
@@ -27,7 +27,7 @@ Although codes were seperated, but need to be further organized to make more rea
 (1)The makefile.R ran great;
 (2)Work can easily access.
 
-##Ze
+###Ze
 ### 1.Coding style
 Codes in 05_graph.R were well commented; But codes in 04_join_sentiment need more comments.
 ### 2.Coding strategy
@@ -44,8 +44,8 @@ Makefile.R ran nicely. All the files were easy to access.
 
 
 
-#Team 3
-##Carol
+###Team 3
+###Carol
 ### 1.Coding style
 (1)Some codes can be put in different lines seperated by "%>%", which can be more readable;
 (2)Codes are well-commented so that the purpose of each chunck can be recognized;
@@ -69,7 +69,7 @@ Makefile.R ran nicely. All the files were easy to access.
 (2)The project were divided into two parts;
 (3)Source package can be put in an individual .r file; So can the datacleaning process.
    
-##Carolina
+###Carolina
 ### 1.Coding style
 (1)Codes are commented line by line, which makes it easy to read;
 (2)Coding style was well refined;
@@ -89,7 +89,7 @@ No tables were displayed in this project.
 (1)The makefil.R can be run;
 (2)Source packages can be put in an individual file.
    
-##Issac
+###Issac
 ### 1.Coding style
 (1)Codes are well commented and explained when necessary;
 (2)Questions were seperated by lines, which makes it easy to recognize;
@@ -108,7 +108,7 @@ No tables were displayed in this project.
 (1)The makefile.R can be run;
 (2)Source package can be put in an individual .r file; So can the datacleaning process.
    
-##Joyce
+###Joyce
 ### 1.Coding style
 (1)The code was well commented;
 (2)The code was overall readable with questions distinguished from each other;
@@ -129,7 +129,7 @@ No tables were displayed in the project.
 (1)The makefie.R can be run;
 (2)The source package can be put in an individual R file.
 
-##Julia
+###Julia
 ### 1.Coding style
 (1)Code was commented line by line;
 (2)Questions were seperated in parts so they were easy to read;
@@ -149,7 +149,7 @@ No tables were displayed in the project.
 (1)Files were well organized;
 (2)The makefile.R can be run.
     
-##Maggie
+###Maggie
 ### 1.Coding style
 (1)The code style is overall desirable. Howevre, in the last two questions, codes could be seperated by "%>%";
 (2)Comments were attached when necessary, but should be more specified so that each question can be easily distinguished.
@@ -168,7 +168,7 @@ No tables were displayed in the project.
 (1)Source packages can be put in an individual file;
 (2)Makefil.R can be run.
    
-##Weiqi
+###Weiqi
 ### 1.Coding style
     Comments should be added in some questions(like Q8);
 ### 2.Coding strategy
@@ -188,8 +188,8 @@ No tables were displayed in the project.
 (2)Actually, it would be more convenient if the source packages part was put in an individual file.
  
    
-#Team 4
-##Annie Yang
+###Team 4
+###Annie Yang
 ### 1.Coding style
 (1)Although not commented line by line, codes were commented when necessary and were easy to understand;
 (2)Codes was overall concise.
@@ -209,7 +209,7 @@ No tables were displayed in the project.
 (1)Makefile.R run;
 (2)Tables and graphs were displayed in rmd form. Graphs were fine, but tables were not that desirable. Better use "knitr:kable".
  
-##Yiquan
+###Yiquan
 ### 1.Coding style
 (1)There were some comments, but not enough. Comments can be written either line by line or in the beginning of each chunk to illustrate the purpose of the code. Comments would be easier to read if written in different lines when the code was too long.
 (2)Questions were seperated from each other.
@@ -228,7 +228,7 @@ No tables were displayed in the project.
 (1)Makefile.R can be run.
 (2)Tables would be easy to read if they were displayed through "knitr:kable".
    
-##Ozan
+###Ozan
 ### 1.Coding style
 (1)Codes were well commented;
 (2)No errors were found;
@@ -245,7 +245,7 @@ Excellent plots. In addition to the teniques taught in class, programmer also us
 ### 6.Ease of access for instructor, compliance with course conventions for submitted work
 I cannot run makefile.R, mainly because the errors in rmd file. Errors were reported corresponding to line 106-131 and the last chunk(something wrong with plot codes). This should be improved.
 
-##Fuyu
+###Fuyu
 ### 1.Coding style
 (1)Some codes were commented, but more comments are needed.
 (2)No errors were found.
@@ -263,7 +263,7 @@ Besides ggplot, wordcloud was also used to visulize results.
 (1)The makefile.R did run;
 (2)The programmer chose to use rmd file to exhibit the project. This has some downsides. For example, Datacleaning codes were redundant when checking this project; Actually, all codes should be hidden and only results shoule be displayed.
 
-#Team 5
+###Team 5
 ### 1.Coding style
 (1)There were some comments. However, more comments are needed for people to understand the code;
 (2)No errors were found.
@@ -280,6 +280,6 @@ Tools and techniques were well applied to the project.
 (1)The file organization was not so good. First of all, there should be a final rmd file to combine all the questions and results; Secondly, files would be easier to access if members have their own file; Thirdly, useless files should be deleted.
 (2)The makefile.R can be run. But the project overall is hard to access because instead of one final html, this project contains several html files.
 
-#Team 6
+###Team 6
 Several days ago I did see some files, but now it seems to be an empty folder.
    
