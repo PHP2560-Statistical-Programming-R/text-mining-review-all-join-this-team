@@ -1,0 +1,16 @@
+---
+title: "peer_review_BoweiWei"
+author: "Bowei Wei"
+date: "November 20, 2017"
+output: html_document
+---
+
+Group 2: Very clean folder with all parts easy to find. Code runs perfectly. However the comment inside the code is missing. Also the graph is missing. And for some reason, some of the function has very long line so its really hard to read.
+
+Group 3: All codes runs perfectly. But the project wasn't combined into the final one. One group member's code ran in the rmd file, not the makefile. That's kind of different than what we are asked to do. Carolina and Julia's comment is impressive. But comment is not shown in everyone's code. 
+
+Group 4: Code runs well. And all well commented.
+
+Group 5: All codes runs perfectly. It's also not combined into one file. Some of the comment is not clear enough. For the graph, some graphs are kind of confused. No exact data is involved but curves. 
+
+Group 6: Empty folder???
