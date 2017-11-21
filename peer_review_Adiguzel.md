@@ -1,7 +1,7 @@
 
-<p align="center">centered text</p>
+<h1 align="center">Peer Review</hh1>
 
-<h3 align="center">*Ozan Adiguzel*</h3>
+<h5 align="center">Ozan Adiguzel</h5>
 
 ## Overall
 
