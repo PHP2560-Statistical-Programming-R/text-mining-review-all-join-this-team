@@ -227,7 +227,7 @@ Team 5
 <tr class="even">
 <td>Ease of access for instructor, compliance with course conventions for submitted work</td>
 <td></td>
-<td>0 The makefile combines every member's contribution in it, which makes it convinient to run. But the codes are not well organized in folders so it takes some time to find. And unfortunately, codes in makefile contain error and do not run.</td>
+<td>0 The makefile combines every member's contribution in it, which makes it convinient to run. But the codes are not well organized in folders so it takes some time to find.</td>
 <td></td>
 </tr>
 </tbody>
