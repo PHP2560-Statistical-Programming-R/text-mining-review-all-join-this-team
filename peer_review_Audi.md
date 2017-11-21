@@ -9,12 +9,12 @@ output:
 ##Summary Score 
 Topic| Team 2 | Team 3 |Team 4 | Team 5 | Team 6 |
 |----| ------ |-------| -----|-----|-----|
-|Coding style            | 0 | + | + |0 | - | 
-|Coding strategy         | 0 | + | + |0 | 0 |
+|Coding style            | 0 | + | + |+ | - | 
+|Coding strategy         | 0 | + | + |+ | 0 |
 |Presentation: graphs    | + | + | + |+ | + | 
-|Presentation: tables    | 0 | 0 | 0 | n/a | 0 |
-|Achievement & creativity| 0 | + | + | + | 0 | 
-|Ease of access          | - | - | - |0 | + |
+|Presentation: tables    | 0 | 0 | 0 |0 | 0 |
+|Achievement & creativity| 0 | + | + |+ | 0 | 
+|Ease of access          | - | - | - |- | + |
 
 ###team 2 
 Topic| Excellent: <br> ✓+ coded as +  | Satisfactory: <br> ✓ coded as 0  |Needs work: <br> ✓- coded as - |
@@ -51,4 +51,15 @@ Topic| Excellent: <br> ✓+ coded as +  | Satisfactory: <br> ✓ coded as 0  |Ne
 #Team 5
 Topic| Excellent: <br> ✓+ coded as +  | Satisfactory: <br> ✓ coded as 0  |Needs work: <br> ✓- coded as - |
 |------| -------- |---------| ----------|
-|Coding style|
+|Coding style| organized code and well commeneted|
+|Coding strategy| simplified with cmplex problems broken to pieces, creative use of functions.| specially Brian|
+|Presentation: graphs| graph are suitable, simple and creative.|
+|Presentation: tables|| fair tables that delever the intended information|
+|Achievement, mastery, cleverness, creativity| creative questions that push the limit of the class and point what class skills can not answer.|
+|Ease of access for instructor, compliance with course conventions for submitted work||| could not make the makefil.R work So, needed to cheack individual files to read code. |
+
+
+##team 6 
+Topic| Excellent: <br> ✓+ coded as +  | Satisfactory: <br> ✓ coded as 0  |Needs work: <br> ✓- coded as - |
+|------| -------- |---------| ----------|
+|Coding style| 
