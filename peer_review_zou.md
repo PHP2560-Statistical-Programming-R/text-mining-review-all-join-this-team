@@ -41,7 +41,7 @@ Team 1
 <tr class="even">
 <td>Presentation: tables</td>
 <td></td>
-<td>0 Allan's table is very neat and other members may need more table to present their results.</td>
+<td>0 Allan's table is very neat and other members may need more tables to present their results.</td>
 <td></td>
 </tr>
 <tr class="odd">
@@ -98,8 +98,8 @@ Team 2
 </tr>
 <tr class="even">
 <td>Presentation: tables</td>
-<td>0 Table(s) carefully constructed to make it easy to perform important comparisons. Careful styling highlights important features.</td>
 <td></td>
+<td>0 Ze's table looks very neat. And the table in Sadia analysis may look nicer by chopping some rows or using datatable() function.</td>
 <td></td>
 </tr>
 <tr class="odd">
@@ -157,7 +157,7 @@ Team 3
 <tr class="even">
 <td>Presentation: tables</td>
 <td></td>
-<td>0 Table(s) carefully constructed to make it easy to perform important comparisons. But it will look nicer to chop off some rows.</td>
+<td>0 Most people prefer using graphs to tables to show the results.</td>
 <td></td>
 </tr>
 <tr class="odd">
@@ -215,7 +215,7 @@ Team 5
 <tr class="even">
 <td>Presentation: tables</td>
 <td></td>
-<td>0 Tables carefully constructed to make it easy to perform important comparisons.</td>
+<td>0 Most people prefer using graphs to tables to show the results.</td>
 <td></td>
 </tr>
 <tr class="odd">
