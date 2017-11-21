@@ -14,7 +14,7 @@ Topic| Team 2 | Team 3 |Team 4 | Team 5 | Team 6 |
 |Presentation: graphs    | + | + | + |+ | + | 
 |Presentation: tables    | 0 | 0 | 0 | n/a | 0 |
 |Achievement & creativity| 0 | + | + | + | 0 | 
-|Ease of access          | - | - | 0 |0 | + |
+|Ease of access          | - | - | - |0 | + |
 
 ###team 2 
 Topic| Excellent: <br> ✓+ coded as +  | Satisfactory: <br> ✓ coded as 0  |Needs work: <br> ✓- coded as - |
@@ -41,4 +41,10 @@ Topic| Excellent: <br> ✓+ coded as +  | Satisfactory: <br> ✓ coded as 0  |Ne
 
 Topic| Excellent: <br> ✓+ coded as +  | Satisfactory: <br> ✓ coded as 0  |Needs work: <br> ✓- coded as - |
 |------| -------- |---------| ----------|
-|Coding style|
+|Coding style|Amazing simple and creative coding style|
+|Coding strategy| simplified with cmplex problems broken to pieces, creative use of functions.|
+|Presentation: graphs| graph are suitable, simple and creative.|
+|Presentation: tables|| fair tables that delever the intended information|
+|Achievement, mastery, cleverness, creativity| organization and clear function names|
+|Ease of access for instructor, compliance with course conventions for submitted work||| could not make the makefil.R work So, needed to cheack individual files to read code|
+
