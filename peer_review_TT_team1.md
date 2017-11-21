@@ -42,5 +42,5 @@ The code in "text-mining.MN.Rmd" ran well. However, comments are too sparse to f
 ## Coding Strategy                    +     0     0     0     0
 ## Presentation of Graphs             0     -     +     0     0
 ## Presentation of Tables             +     +     0     +     -
-## Achievement/Mastery/Creativity     +     0     +     0     0
+## Achievement/Mastery/Creativity     0     0     +     0     0
 ## Ease of Access                     +     +     +     0     0
