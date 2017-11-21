@@ -1,11 +1,11 @@
 Topic| team 2 | team 3 | team 4| team 5 |team 6|
 |--------|---|---|---|---|---|
-|Coding style| 0 | + | 0 | 0 |No file|
-|Coding strategy| + | + | + | + |No file|
-|Presentation: graphs| + | 0 | 0 | 0 |No file|
-|Presentation: tables| + | 0 | 0 | 0 |No file|
-|Achievement, mastery, cleverness, creativity| + | 0 | + | 0 |No file|
-|Ease of access for instructor, compliance with course conventions for submitted work| + | 0 | 0 | - |No file|
+|Coding style| 0 | + | 0 | 0 | 0 |
+|Coding strategy| + | + | + | + | + |
+|Presentation: graphs| + | 0 | 0 | 0 | 0 |
+|Presentation: tables| + | 0 | 0 | 0 | + |
+|Achievement, mastery, cleverness, creativity| + | 0 | + | 0 | 0 |
+|Ease of access for instructor, compliance with course conventions for submitted work| + | 0 | 0 | - | + |
 
 ###Team 2
 
@@ -281,5 +281,17 @@ Tools and techniques were well applied to the project.
 (2)The makefile.R can be run. But the project overall is hard to access because instead of one final html, this project contains several html files.
 
 ###Team 6
-Several days ago I did see some files, but now it seems to be an empty folder.
-   
+### 1.Coding style
+Codes were well commented so that the purpose of the codes can be seen easily; However, more detailed comments could be added explainig the function of a specific code.
+### 2.Coding strategy
+Group members have their own commision and their files were well organized.
+### 3.Presentation:Graphs
+Overall, the graphs can well answer the questions. Howevre, there were some pictrures that were not showing in either the graph file or the final html. For example, SentHist.png and SengHistIndividual.png.
+### 4.Presentation:Tables
+One table was displayed in the project, which can nicely answer the question.
+### 5.Achievement, mastery, cleverness, creativity
+(1)In addition to what was taught in class, additional tools like "wordcloud" was used to complete the analysis;
+(2)Graphs were in some sense monotonous. There were many graphs, but they were either barplots or wordcloud. Different types of plots will better this project.
+### 6.Ease of access for instructor, compliance with course conventions for submitted work
+(1)makefile.R ran great;
+(2)Every file was named after a group member, which makes it easy to track the work. However, it would better if the names of files are in the same format.
