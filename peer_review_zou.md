@@ -267,7 +267,7 @@ Team 6
 <tr class="odd">
 <td>Presentation: graphs</td>
 <td></td>
-<td>0 Each queation is performed by graph(s). But some graphs cannot be viewed.</td>
+<td>0 Each question is performed by graph(s). But some graphs cannot be viewed.</td>
 <td></td>
 </tr>
 <tr class="even">
@@ -279,14 +279,14 @@ Team 6
 <tr class="odd">
 <td>Achievement, mastery, cleverness, creativity</td>
 <td></td>
-<td>0 Topis is interesting and creative. But somehow unfinished.</td>
+<td>0 Topis is interesting and creative. But the analysis is somehow unfinished.</td>
 <td></td>
 </tr>
 <tr class="even">
 <td>Ease of access for instructor, compliance with course conventions for submitted work</td>
 <td></td>
-<td>0 There is only one folder of a team member and the code can run. Some folders are empty. The makefile can run but it is not completed.</td>
 <td></td>
+<td>- There is only one folder of a team member and the code can run. Some folders are empty. The makefile can run but it is not completed.</td>
 </tr>
 </tbody>
 </table>
