@@ -12,7 +12,7 @@ None of the graphs were put in the data folder on Github so I could not see the 
 
 The code could run on my computer. However, more comments could be added to the code for easier understanding.
 
-Coding strategy breaks up project into smaller parts. The flow is coherent.
+Coding strategy breaks up project into smaller parts. The flow is coherent. However, I could not find the final merged project of the entire team.
 
 The graph for Question 2 could be ranked from high to low (like they did in Question 3) for better illustration of the answer.
 
@@ -20,7 +20,7 @@ The graph for Question 2 could be ranked from high to low (like they did in Ques
 
 The code ran well. Coding style is good and well-commented. However toward the end of the chunks comments become scarce.
 
-The plots are appropriate in answering the questions. Headings are well-labeled and description of the data is concise.
+The plots are appropriate in answering the questions. Headings are well-labeled and description of the data is concise. On the other hand, tables were not visually appealing. Package "tables" is recommended.
 
 
 # Team 5
@@ -33,8 +33,14 @@ The plots answer the questions. However, the tables look messy and and I recomme
 
 # Team 6
 
-I could not locate the makefile.R. The one in the "Lisha" folder only has 2 questions.
+I could not locate the makefile.R. The one in the "Lisha" folder only has 2 questions. Code did not run well because the file pathway is not clearly indicated.
 
 The code in "text-mining.MN.Rmd" ran well. However, comments are too sparse to fully understand.
 
-
+##                                Team2 Team3 Team4 Team5 Team6
+## Coding Style                       +     +     0     0     0
+## Coding Strategy                    +     0     0     0     0
+## Presentation of Graphs             0     -     +     0     0
+## Presentation of Tables             +     +     0     +     -
+## Achievement/Mastery/Creativity     +     0     +     0     0
+## Ease of Access                     +     +     +     0     0
