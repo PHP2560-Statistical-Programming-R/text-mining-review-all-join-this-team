@@ -1,0 +1,60 @@
+---
+title: "peer_review_dchen"
+author: "David Chen"
+date: "November 20, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Topic| team 1 | team 2 | team 3| team 4 |team 5|
+|--------|---|---|---|---|---|
+|Coding style| + | + | + | + |+|
+|Coding strategy| + | + | + | + |+|
+|Presentation: graphs| 0 | + | 0 | 0 |0|
+|Presentation: tables| 0 | + | 0 | 0 |0|
+|Achievement, mastery, cleverness, creativity| + | + | + | 0 |+|
+|Ease of access for instructor, compliance with course conventions for submitted work| 0 | 0 | 0 | 0 |+|
+
+Team 1
+
+```{r}
+##Team 1
+##The code is well organized and commented throughout the project. 
+##The code is well distributed and runs efficiently.
+##The graphs/visuals are good and overall the entire project does a nice job of utilizing the packages and functions that we have studied within the course. 
+```
+Team 2
+
+```{r}
+##The code is concise and does accomplishes the objectives efficiently.
+##Visuals are good and relevant to their overall topic
+##The project does a good job overall and shows understanding how using the coding concepts that we've learned
+##The organization of the files could be better
+```
+Team 3
+
+```{r}
+##The code is well commented and easy to follow
+##The organization of the code is nicely done.
+##Visuals are well designed and easy to follow
+##The project demonstrates a strong understanding of the concepts that we have learned in class and includes additional mechanics beyond what we have learned
+```
+Team 4
+
+```{r}
+##The code is well commented and runs well.
+##The graphs are nicely done, tables could've been formatted better.
+##The project overall does a good job of covering the material we have learned
+##The number of topics within the project shows a high level of effort committed but disjoints the overall presentation aspect
+```
+Team 5
+
+```{r}
+##The code is well commented and runs efficiently.
+##The code is well organized.
+##The visuals are well done but could be improved with better presentation of the titles on some
+##The project overall demonstrates a solid understanding of the concepts that we have learned in class
+```
