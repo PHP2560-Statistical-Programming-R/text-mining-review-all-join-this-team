@@ -41,8 +41,8 @@ The code in "text-mining.MN.Rmd" ran well. However, comments are too sparse to f
 Topic| Team 2  | Team 3  | Team 4 | Team 5 | Team 6|
 | ----- | ------ | ------ | ------ | ------ | ------ |
 | Coding style| + | + | 0 | 0 | 0 |
-| Coding strategy| +  | + |  + | + | 0 |
-| Presentation: graphs| 0 | 0 | + | + | 0 |
-| Presentation: tables| + | +| + | + | - |
-| Achievement/ mastery| 0 | 0 | + | 0 | - |
-| Ease of access| 0 | 0 | 0 | + | 0 |
+| Coding strategy| 0  | + |  + | + | 0 |
+| Presentation: graphs| + | 0 | 0 | 0 | 0 |
+| Presentation: tables| + | +| + | 0 | 0 |
+| Achievement/ mastery| 0 | 0 | + | + | - |
+| Ease of access| 0 | + | + | 0 | 0 |
