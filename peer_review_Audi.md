@@ -9,12 +9,12 @@ output:
 ##Summary Score 
 Topic| Team 2 | Team 3 |Team 4 | Team 5 | Team 6 |
 |----| ------ |-------| -----|-----|-----|
-|Coding style            | 0 | + | + |+ | - | 
-|Coding strategy         | 0 | + | + |+ | 0 |
-|Presentation: graphs    | + | + | + |+ | + | 
+|Coding style            | 0 | + | + |+ | + | 
+|Coding strategy         | 0 | + | + |+ | + |
+|Presentation: graphs    | + | + | + |+ | 0 | 
 |Presentation: tables    | 0 | 0 | 0 |0 | 0 |
-|Achievement & creativity| 0 | + | + |+ | 0 | 
-|Ease of access          | - | - | - |- | + |
+|Achievement & creativity| 0 | + | + |+ | + | 
+|Ease of access          | - | - | - |- | 0 |
 
 ###team 2 
 Topic| Excellent: <br> ✓+ coded as +  | Satisfactory: <br> ✓ coded as 0  |Needs work: <br> ✓- coded as - |
@@ -52,9 +52,9 @@ Topic| Excellent: <br> ✓+ coded as +  | Satisfactory: <br> ✓ coded as 0  |Ne
 Topic| Excellent: <br> ✓+ coded as +  | Satisfactory: <br> ✓ coded as 0  |Needs work: <br> ✓- coded as - |
 |------| -------- |---------| ----------|
 |Coding style| organized code and well commeneted|
-|Coding strategy| simplified with cmplex problems broken to pieces, creative use of functions.| specially Brian|
+|Coding strategy| simplified with cmplex problems broken to pieces, creative use of functions specially Brian|
 |Presentation: graphs| graph are suitable, simple and creative.|
-|Presentation: tables|| fair tables that delever the intended information|
+|Presentation: tables|| fair tables that deliver the intended information|
 |Achievement, mastery, cleverness, creativity| creative questions that push the limit of the class and point what class skills can not answer.|
 |Ease of access for instructor, compliance with course conventions for submitted work||| could not make the makefil.R work So, needed to cheack individual files to read code. |
 
@@ -62,4 +62,9 @@ Topic| Excellent: <br> ✓+ coded as +  | Satisfactory: <br> ✓ coded as 0  |Ne
 ##team 6 
 Topic| Excellent: <br> ✓+ coded as +  | Satisfactory: <br> ✓ coded as 0  |Needs work: <br> ✓- coded as - |
 |------| -------- |---------| ----------|
-|Coding style| 
+|Coding style| organized code and well commeneted|
+|Coding strategy| simplified with cmplex problems broken to pieces, creative use of functions and divide of resposibility between team members|
+|Presentation: graphs| | graphs suitable for questions simple and readable.|
+|Presentation: tables| | few tables that are simple and deleiver the intended information|
+|Achievement, mastery, cleverness, creativity| creative  topic and questions|
+|Ease of access for instructor, compliance with course conventions for submitted work| |the code work with few mistakes and some part are hidden|
