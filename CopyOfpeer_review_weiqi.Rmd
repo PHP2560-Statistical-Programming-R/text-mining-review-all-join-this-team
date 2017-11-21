@@ -1,0 +1,37 @@
+Comments for Team 1
+===================
+
+-   The code runs well.Coding style is good and well-commented. 
+-   The "final_project" file is organized and clear. It could be clearer if organizing the other files as well. Question 5 is interesting and creative. 
+-   The graphs are clear and could answer the question well. Some of the graphs could be improved if resizing the axis labels because some words are overlapped or too small to read. Also, it would be better if removing the major/minor grid and adding titles. 
+
+Comments for Team 2
+===================
+
+-   The "makefile.R" file does not work in T2. I think it's because the graphs were not saved properly. So I opened the file "sadia" and "ze". 
+-   The code of Sadia runs well. The coding style is good and well-commented. Each step has separate file and clear comments. Most of the graphs could answer the questions well. It's nice to see the comparison of sentiments among different books and Sadia made great interpretation of the graphs and tables. But for the "positive and negative of each chapter" question, I only saw the frequency for Chapter 1. Also, the lines did not show up for the "Change of Sentiments throughout the chapter" question. 
+-   The topic of "Ze" is creative. The code runs well. The coding style is good and well-commented. Each  step has separate file and clear comments. The graphs could answer the questions well. It could be better with more interpretation.
+
+My team is Team 3.
+
+Comments for Team 4
+===================
+
+-    There are several separate projects in Team 4. All the codes run well. The coding style is good and well-commented. 
+-    "harry potter" file has nice and organized folders and the graphs are presented nicely. The table could have been presented using knitr::table.
+-    The graphs of TedTalks are amazing and well-presented. But I only saw the final rmd file. 
+-    The code of "Trump_twitter" runs well and has nice coding style. The "change in word use" of Fuyu is great. And it's also nice to the discussion of limitations in Ozan's project. 
+-    Some of the graphs could be improved if resizing the axis labels.
+
+Comments for Team 5
+===================
+
+-   The html. file each person gave nice presentation. The plots are well-labeled and could answer the questions properly. 
+-   It would be better if there is a file for each person. 
+-   Some of the graphs could be improved if resizing the axis labels.
+
+Comments for Team 6
+===================
+
+-   I only saw on "makefile.rmd" file in the folder. I tried and it ran well. And I got           "repot_of_Beer_Tweets.html" file. There are great explanation for each question. But I did not see some of the graphs. 
+-   It could be better to make separate files for each person. 
