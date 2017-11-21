@@ -1,7 +1,7 @@
 
 <h1 align="center">Peer Review</hh1>
 
-<h5 align="center">Ozan Adiguzel</h5>
+<h3 align="center"><i>Ozan Adiguzel</i></h3>
 
 ## Overall
 
