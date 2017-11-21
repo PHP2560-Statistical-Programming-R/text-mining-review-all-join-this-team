@@ -1,0 +1,34 @@
+---
+title: "Peer Review"
+author: "Carolina Velasco"
+date: "11/15/2017"
+output: html_document
+---
+
+# Score following rubric:
+```{r, echo=FALSE}
+Topic <- c("Coding style", "Coding strategy", "Presentation: graphs", "Presentation: tables", "Achievement, mastery, cleverness, creativity", "Ease of access for instructure, compliance with conventions")
+Team1 <- c("+", "+", "+", "+", "+", "+")
+Team2 <- c("0", "+", "+", "+", "+", "+")
+Team4 <- c("0", "+", "+", "-", "+", "+")
+Team5 <- c("-", "+", "+", "+", "+", "+")
+Team6 <- c("-", "+", "+", "+", "-", "+")
+peer_review <- data.frame(Topic, Team1, Team2, Team4, Team5, Team6)
+  
+library(knitr)
+kable(peer_review, format='markdown')
+```
+
+
+# Comments: 
+- **Team 1**: I randomly selected to look at Allan's project. His code was very well commented in files 00 to 03, but I would have like to see more comments in the main analysis file. The idea to merge the book text and book metadata was very clever and allowed to pose interesting questions. Allan also used commands we had not (yet) learned in the videos, like token = "ngrams" to find most common word pairs and webscraping. Graphs and tables were very well designed and visually appealing. The code run without issues. 
+
+- **Team 2**: I randomly selected to look at Sadia's project. Her code was broken down into sub-problems and was efficient. However, the "graph" file was barely commented. The questions posed were very creative, and the respective graphs and tables were well designed. 
+
+- **Team 4**: I randomly selected to look at Annie Yang's project. Her code looked efficient, used appropriate structure, and did not display errors. Annie also used commands beyond the scope of the course, like token = "ngrams" to find most common word pairs. Although Annie explained the purpose of each function/sentiment analysis, the code itself had very few comments, making it difficult to follow along. Moreover, tables were not visually appealing, as they came directly from R output (i.e. displayed too many decimal places). 
+
+- **Team 5**: I randomly selected to look at Linde's project. The questions asked and the way they were answered was creative and clever. Moreover, the plots were well-thought, the code run smoothly and was efficient, and the conclusion section in the R-Markdown was relevant and clear. However, the "analysis" file, as well as the the rest of the files, was not clearly commented, making it hard to know what question the code was answering or the purpose of each line of code. 
+
+- **Team 6**: I randomly selected to look at Lisha's project. The code was broken down into sub-problems and was efficient, but it was not commented at all. I found that the idea of looking at tweets from five beer companies was very creative and interesting. However, I don't think the sentiment analysis performed was enough; the resulting html file only contained one question. I would have liked to see a deeper sentiment analysis answering several questions with graphs and tables. 
+
+

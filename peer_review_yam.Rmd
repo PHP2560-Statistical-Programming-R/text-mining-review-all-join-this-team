@@ -1,0 +1,171 @@
+---
+title: "Peer Review Yam"
+author: "Derrick Yam"
+date: "November 20, 2017"
+output: html_document
+---
+
+#Team 1 Review
+
+####Coding style (+)
+
+* Make file calls source files which also call source files, could flow easier if everything was sourced into one file
+* Data cleaning and analysis are very well commented and readable
+
+
+####Coding Strategy (+)
+
+* Well distributed throughout all members of the group
+* Code broken up into small portions and for the most part runs efficiently together
+
+####Presentation: Graphs (+)
+
+* Very good graphs which are interesting, informative and aesthetically pleasing.
+
+####Presentation: Tables (0)
+
+* Few tables included but the ones included could be improved slightly
+
+####Achievement, mastery, cleverness, creativity (+)
+
+* Very creative graphs which show clear mastery of data cleaning and visualization.
+
+####Ease of access for instructor, compliance with course conventions for submitted work (-)
+
+* paper_Bowei_Wei does not render as a mardown file because of an error.
+* Could include a clearer presentation of all of the individual makefiles together. It would definitely make the project easier to evaluate and organize.
+
+#Team 2 Review
+
+####Coding style (+)
+
+* Very well commented, easy to follow and read
+
+####Coding Strategy (+)
+
+* Well divided, easy to interpret and efficient
+* Minimal code to accomplish the objectives
+* Organization is off with file everywhere and no clear way to determine which to run.
+
+####Presentation: Graphs (+)
+
+* Great color, very interesting and easy to read/understand.
+
+####Presentation: Tables (0)
+
+* Should be formatted more condensely to make it easier to read.
+
+####Achievement, mastery, cleverness, creativity  (+)
+
+* Very clever analysis.
+* Clearly they have mastered the coding concepts in order to create the markdown file that they have.
+
+####Ease of access for instructor, compliance with course conventions for submitted work (0)
+
+* Ze and Sadia individual files have a great workflow and are easy to understand from the source code to the makefile to the markdown.
+* However, there is nothing tying the projects together and without investigating each folder would not know where to look.
+
+
+#Team 3 Review
+
+####Coding style (+)
+
+* Well commented, but could improve spacing to make it easier to read.
+
+####Coding Strategy (+)
+
+* Clear division of tasks in order to efficientyl complete objectives.
+* Easy to read and follow.
+* Organization could improve by combining all source files in some way.
+
+####Presentation: Graphs (+)
+
+* Clear graphs, some formatting issues with the titles, axes and legends.
+* Need to review the scale size for some of the graphs
+* Aesthetically very pleasing.
+* Quality of graphs definitely differs between individuals.
+
+####Presentation: Tables (0)
+
+* Julia and Weiqi's tables could have cleaner titles and be more condensed.
+
+####Achievement, mastery, cleverness, creativity
+
+* Overall, very interesting and clever analysis.
+* Depending on the individual, could master the data visualization more.
+* Carolina's relative anticipation smoothing way more advanced then what we have covered, very interesting graph.
+
+
+####Ease of access for instructor, compliance with course conventions for submitted work (0)
+
+* R project very hard to find in the repository, had to open each individual folder in order to get to the R project.
+* Each individual has their own folder with their own code and their own markdown file, would be easier and more cohesive if all code was sourced into one main project
+
+
+#Team 4 Review
+
+####Coding style (+)
+
+* Well commented and divided.
+* Clear demonstration of the coding techniques learned.
+
+####Coding Strategy (+)
+
+* Efficient and well divided.
+* Appropriate struvture definitely used
+
+####Presentation: Graphs (0)
+
+* Could have cleaner titles.
+* Ted Talks have clean and visually appealing graphs.
+* Love the Trump twitter word clouds.
+
+####Presentation: Tables (-)
+
+* Used R output for tables!! Should reformat as kable or something nicer.
+* Tedtalks well formatted
+
+####Achievement, mastery, cleverness, creativity (0)
+
+* Markdown file has the wrong syntax and does not render neatly.
+* R output should not be included.
+* Ridgeline plot on ted talks is very clever and advanced
+
+####Ease of access for instructor, compliance with course conventions for submitted work (0)
+
+* No clear organization and covers a lot of different topics with no explicit connection.
+* Each sub project is very good however.
+
+#Team 5 Review
+
+####Coding style (+)
+
+* Well commented and consisitent throughout all code showing coherency and thorough understanding of concepts.
+
+####Coding Strategy (+)
+
+* Very well divided.
+* Efficient and clear to individual objectives.
+
+####Presentation: Graphs (0)
+
+* Olivia's graph's are very clean.
+* Linde's graphs are very hard to understand.
+* Some issues with the titles and scales but overall pretty good.
+
+####Presentation: Tables (-)
+
+* Reformat them don't just include the R output.
+
+####Achievement, mastery, cleverness, creativity (+)
+
+* Shouldn't include direct R output in markdown files.
+* Clever analyses, like the NYT intensity scores and the logistic classifier, but the presentation of the classifier could definitely be cleaner.
+
+####Ease of access for instructor, compliance with course conventions for submitted work (+)
+
+* 3 R projects included in the repository, which is the right one? - However, easy to find them.
+* One make file which calls all source code and executed the four markdown files. Makes it very easy to evaluate.
+
+
+#Team 6 (Mine)
