@@ -37,10 +37,12 @@ I could not locate the makefile.R. The one in the "Lisha" folder only has 2 ques
 
 The code in "text-mining.MN.Rmd" ran well. However, comments are too sparse to fully understand.
 
-##                                Team2 Team3 Team4 Team5 Team6
-## Coding Style                       +     +     0     0     0
-## Coding Strategy                    +     0     0     0     0
-## Presentation of Graphs             0     -     +     0     0
-## Presentation of Tables             +     +     0     +     -
-## Achievement/Mastery/Creativity     0     0     +     0     0
-## Ease of Access                     +     +     +     0     0
+
+Topic| Team 2  | Team 3  | Team 4 | Team 5 | Team 6|
+| ----- | ------ | ------ | ------ | ------ | ------ |
+| Coding style| + | + | 0 | 0 | 0 |
+| Coding strategy| +  | + |  + | + | 0 |
+| Presentation: graphs| 0 | 0 | + | + | 0 |
+| Presentation: tables| + | +| + | + | - |
+| Achievement/ mastery| 0 | 0 | + | 0 | - |
+| Ease of access| 0 | 0 | 0 | + | 0 |
