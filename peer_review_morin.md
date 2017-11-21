@@ -1,5 +1,10 @@
-Team 1
-======
+Peer Review - Text Analysis
+===========================
+
+Blain Morin
+-----------
+
+### Team 1
 
 <table>
 <thead>
@@ -44,8 +49,7 @@ clearly. I think maybe adding legends or more description would help.
 Most of the code was commented well. It may be better to hide the code
 in the final output. Not all of the makefiles run.
 
-Team 2
-======
+### Team 2
 
 <table>
 <thead>
@@ -88,8 +92,7 @@ of the code is well commented. I thought the questions were interesting
 that the results were well exmplained. Some of the graphs are
 sophisticated. The makefile code runs.
 
-Team 3
-======
+### Team 3
 
 <table>
 <thead>
@@ -131,8 +134,7 @@ the code. I also thought that the questions were deep and well answered
 by the graphs. A lot of the graphs are sophisticated and reflect a clear
 offort for readability. The makefile code runs.
 
-Team 5
-======
+### Team 5
 
 <table>
 <thead>
@@ -176,8 +178,7 @@ such as knitr to make nicer tables. Some of the graphs were very
 aesthetically pleasing. Th only makefile I saw (for Brian's project)
 runs.
 
-Team 6
-======
+### Team 6
 
 <table>
 <thead>
