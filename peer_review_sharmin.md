@@ -1,7 +1,7 @@
-﻿# Peer Review of Work by Sadia Sharmin
+# Peer Review of Work by Sadia Sharmin
 
 Topic| Team 1  | Team 3  | Team 4 | Team 5 | Team 6|
-|----| ------ |-------| -----|
+| ----- | ------ | ------ | ------ | ------ | ------ |
 | Coding style| + | + | 0 | 0 | 0 |
 | Coding strategy| +  | + |  + | + | 0 |
 | Presentation: graphs| 0 | 0 | + | + | 0 |
