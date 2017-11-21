@@ -1,0 +1,108 @@
+---
+title: "peer_review_michael"
+author: "Michael"
+date: "November 21, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Group 1: 
+
+* Coding style (+)
+was very clear and well commented. the makefile ran perfectly
+
+* coding strategy (0)
+not to sure how the code is distrbuted it is a bit confusing 
+
+* graphs (+)
+looks great, the details to the graphs was very well done, though some more labels would help.I remember one that used a line on top of a bar chart, I wanted to know what that was 
+
+* tables (0)
+I would have liked more analysis, or at least more informative titles 
+
+* achievement (+)
+The graphs are really great, reallu helped explained what was happening, very impressed 
+
+* ease (+)
+a bit disorganized though 
+
+## Group 2 
+
+* Code Style (0)
+well commented, but some should work on their organization structures of the code for readability, couldve a used a loop or a function for some of the more repetitive prospects of the code. 
+
+* graphs (+)
+I liked the graphs, they were very interesting and well organized/labelled 
+
+*tables (0)
+they didn't use many becasue they did not need to 
+
+*achievement (0)
+felt like everyone kind of did the same investigation, would've been interested to see more different approaches, perhaps more creative questions? 
+
+* ease (+)
+works! 
+
+## Group 3 
+
+* Code Style (0)
+Lacking more comments, but over all well thought out 
+
+* Code strategy (0)
+I don't really understand how work is broken up becuase I just see everyone is doing their own thing? Though I did enjoy Carol's last question very creative 
+
+* graphs (+)
+well labelled and clean 
+
+* table (0)
+showed exactly what answers the question, didn't use many 
+
+* achievements (+)
+They all did interesting questions for the data, with what limited tools for text mining we got 
+
+*ease (-)
+no makefile 
+
+## Group 4
+* Code style (0)
+really need more comments it can be very confusing to follow along, especially for longer chunks
+
+*code strategy (+)
+I'm really confused to what is going on, I think everyone has a different topic within this group? But overall they did a good job of breaking large tasks into smaller ones, i follow their logic
+
+*graphs (+)
+Detailed, and covers a breadth of material, especially the one on ted talks, jaw-dropping. 
+
+*table (0)
+didn't use many but what was there was suffcient to answer the questions, it would make sense because graphs and world cloud are good for sentiment analysis 
+
+achievement (+)
+really great coding and creative questions 
+
+ease (+)
+everything runs, but one big makefile would be nice 
+
+## Group 5
+
+*code style (+)
+
+well organized, and logical planning. Super efficent
+
+*code strategy (+)
+breaks down large problems into managable chuncks 
+
+* graph (0)
+Some of the graphs need more explaination, and more descriptive labels, regression heavier things were tought to follow  
+
+* table (0)
+I didn't see any tables, but some would be nice for things like showcasing most popular words and which over time for sentiment analysis pieces 
+
+achievement (+)
+although some really cool things were being done, like all the regression, it felt like it was missing something, maybe more of a qualitative look at some of the text. For example if we can see the words and sentences used as visuals instead of just charts of regression. but over all creativity was great, they really went above and beyond in terms of thinking about text analysis and clever ways to explore the data
+
+* ease (+)
+great work, everything ran fine 
+
