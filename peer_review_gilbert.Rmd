@@ -1,0 +1,120 @@
+---
+title: "Text Mining Peer Review"
+author: "Brian Gilbert"
+date: "November 21, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Team 1
+
+###Coding Style
+Grade: +
+
+###Coding Strategy
+Grade: 0 
+
+###Presentation: Graphs
+Grade: +
+
+### Achievement, mastery, cleverness, creativity
+Grade: 0
+
+### Ease of access for instructor, compliance with course conventions for submitted work
+Grade: -
+
+### Comments
+The extraneous files are confusing without further instruction in the readme.
+Makefile under the final project folder does not run correctly.
+Graphical displays are pretty.
+Thorough comments.
+
+## Team 2
+
+### Coding Style
+Grade: 0
+
+### Coding Strategy
+Grade: +
+
+### Presentation: Graphs
+Grade: +
+
+### Achievement, mastery, cleverness, creativity
+
+Grade: 0
+
+### Ease of access for instructor, compliance with course conventions for submitted work
+Grade: -
+
+### Comments
+Well-organized and clear. Could use more commenting. However, makefile returned an error.
+
+## Team 3
+
+### Coding Style
+Grade: +
+
+### Coding Strategy
+Grade: 0
+
+### Presentation: Graphs
+Grade: +
+
+### Achievement, mastery, cleverness, creativity
+Grade: 0
+
+### Ease of access for instructor, compliance with course conventions for submitted work
+Grade: -
+
+### Comments.
+Carol makefile returned an error. No unified makefile. Solid coding.
+
+## Team 4
+
+### Coding Style
+Grade: +
+
+### Coding Strategy
+Grade: 0 
+
+### Presentation: Graphs
+Grade: 0
+
+### Achievement, mastery, cleverness, creativity
+Grade: -
+
+### Ease of access for instructor, compliance with course conventions for submitted work
+Grade: -
+
+### Comments
+No unified makefile.
+The Harry Potter project is not reader-friendly (sparse explanations, poor text-formatting). The TedTalk makefile returned an error. Trump makefile returned an error. Ivanka makefile returned an error.
+Coding is solid.
+
+## Team 5
+n/a
+
+## Team 6
+
+### Coding Style
+Grade: +
+
+### Coding Strategy
+Grade: +
+
+### Presentation: Graphs
+Grade: 0
+
+### Achievement, mastery, cleverness, creativity
+Grade: 0
+
+### Ease of access for instructor, compliance with course conventions for submitted work
+Grade: 0
+
+### Comments
+Well-unified. Output files are a little hard to identify. More textual explanation in paper would be good. Clean coding.
+YamSentimentAnalysis returned an error.
