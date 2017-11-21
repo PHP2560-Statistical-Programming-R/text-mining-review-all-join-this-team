@@ -104,8 +104,8 @@ Team 2
 </tr>
 <tr class="odd">
 <td>Achievement, mastery, cleverness, creativity</td>
+<td>+ Tools and techniques from the course are applied very competently and, perhaps,somewhat creatively.</td>
 <td></td>
-<td>0 Tools and techniques from the course are applied very competently and, perhaps,somewhat creatively.</td>
 <td></td>
 </tr>
 <tr class="even">
