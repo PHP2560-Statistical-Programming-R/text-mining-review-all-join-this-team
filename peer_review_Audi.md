@@ -48,3 +48,7 @@ Topic| Excellent: <br> ✓+ coded as +  | Satisfactory: <br> ✓ coded as 0  |Ne
 |Achievement, mastery, cleverness, creativity| organization and clear function names|
 |Ease of access for instructor, compliance with course conventions for submitted work||| could not make the makefil.R work So, needed to cheack individual files to read code|
 
+#Team 5
+Topic| Excellent: <br> ✓+ coded as +  | Satisfactory: <br> ✓ coded as 0  |Needs work: <br> ✓- coded as - |
+|------| -------- |---------| ----------|
+|Coding style|
