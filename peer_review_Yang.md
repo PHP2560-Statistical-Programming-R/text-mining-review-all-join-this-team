@@ -3,13 +3,13 @@
 
 ## Score
 
-opic| Team 1 | Team 2 |Team 3 | Team 5 | Team 6 |
+Topic| Team 1 | Team 2 |Team 3 | Team 5 | Team 6 |
 |----| ------ |-------| -----|-----|-----|
 |Coding style| + | + | + |+ | 0 | 
 |Coding strategy| + | 0 | + | + | 0 |
 |Presentation: graphs | 0 | + | + | + | + | 
 |Presentation: tables | 0 | + | 0 | 0 | 0 |
-|Achievement, mastery, cleverness, creativity| 0 | + | + | + | 0 | 
+|Achievement, mastery, cleverness, creativity| + | + | + | + | 0 | 
 |Ease of access | 0 | + | + |0 | + |
 
 ## Comments
