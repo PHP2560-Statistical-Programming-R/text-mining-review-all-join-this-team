@@ -75,12 +75,12 @@ Ease of access for instructor, compliance with course conventions for submitted 
 
 Coding style: More comments can be added to the code.
 
-Coding strategy: Complicated problem broken down into sub-problems that are individually much simpler. For each sub-problem, the code is readable. For each sub-problem, the code can be more readable with more comments and some code can be written short in a line.
+Coding strategy: Complicated problem broken down into sub-problems that are individually much simpler. For each sub-problem, the code can be more readable with more comments and some code can be written short in a line.
 
-Presentation graphs: Necessary lables have been added. And explanation of the graph is given.
+Presentation graphs: Necessary lables have been added. And there are some explanation for the graphs.
 
 Presentation tables: For the table displaying the number of months each company has the highest retweets, it can be arranged by count. And there are relatively few tables. The team can provide some tables and make the comparison more understandable
 
-Achievement, mastery, cleverness, creativity (0): Well applied the tools and techniques from the course. 
+Achievement, mastery, cleverness, creativity: Well applied the tools and techniques from the course. 
 
 Ease of access for instructor, compliance with course conventions for submitted work: Easy to understand the code and codes runs.
