@@ -30,9 +30,9 @@
     ## 1                   Coding Style      +      +      0      0      0
     ## 2                Coding Strategy      +      0      0      0      0
     ## 3         Presentation of Graphs      0      0      +      0      -
-    ## 4         Presentation of Tables      +      +      +      +      -
+    ## 4         Presentation of Tables      +      +      +      +      0
     ## 5 Achievement/Mastery/Creativity      +      +      +      0      0
-    ## 6                 Ease of Access      +      +      +      0      -
+    ## 6                 Ease of Access      +      +      +      0      0
 
 Comments for Team 1
 ===================
@@ -86,13 +86,10 @@ Comments for Team 5
 Comments for Team 6
 ===================
 
--   Lisha was the only member that had a folder that ran properly.
-    However, she was only responsible for doing one question
--   The overall group final paper did not run properly due to no
-    check\_packages.R to install packages that were missing.
--   Code has errors/typos even after installing packages that does not
-    allow to run (ex: guines.td instead of guiness.td on line 83)
--   Could not view graphs other than Lisha's because of errors knitting
-    document
--   Comments were satisfactory but more comments could be used for
-    complex lines that are hard to follow computations
+- Missing some graphs in html output for sentiment analysis
+- Bargraphs of beer company top 5 tweets x axis hard to understand. 
+  Would be better if a legend labeling topic #s was a part of the 
+  graphs, or word labels placed directly on the axis with a coordinate flip.
+- Word clouds to portray most frequent words are creative, 
+  but would suggest a frequency bar graph to answer the questions instead for more detailed information.
+- Comments were satisfactory but more comments could be used for complex lines that are hard to follow computations.
